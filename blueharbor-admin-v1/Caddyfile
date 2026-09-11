@@ -1,0 +1,12 @@
+:{$PORT:8080} {
+    handle /api/* {
+        reverse_proxy 127.0.0.1:8001 {
+            header_up Host "127.0.0.1:8001"
+            header_up Origin "http://127.0.0.1:3000"
+            header_up X-Real-IP {remote}
+        }
+    }
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}

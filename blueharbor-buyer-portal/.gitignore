@@ -1,0 +1,12 @@
+.env
+.env.*
+.venv/
+node_modules/
+dist/
+.wrangler/
+.vinext/
+__pycache__/
+*.pyc
+*.log
+*.tsbuildinfo
+.launcher.lock

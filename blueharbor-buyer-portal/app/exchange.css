@@ -1,0 +1,1199 @@
+/* India Exchange: deep-water chrome, luminous working surfaces, photographic catalogue. */
+.exchange-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 270px;
+  padding: 32px 36px;
+  color: #fff;
+  background: #063b56;
+  box-shadow: 0 16px 40px #082e4b30;
+  border: 1px solid #5595ad;
+}
+.exchange-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 56%;
+  z-index: -2;
+}
+.exchange-hero:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #031c34eb 5%, #06466365 72%, #06304785);
+  z-index: -1;
+}
+.exchange-hero .hero-kicker {
+  font-size: 12px;
+  color: #aff3e8;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+.exchange-hero h1 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(32px, 3.6vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -1.8px;
+  font-weight: 600;
+}
+.exchange-hero h1 em {
+  font-style: normal;
+  color: #92f1e1;
+}
+.exchange-hero-copy > p:last-child {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #d4e7f4;
+  margin-top: 16px;
+}
+.exchange-hero-stock {
+  background: #efffff13;
+  backdrop-filter: blur(14px);
+  padding: 22px;
+  border: 1px solid #b3eaff50;
+  border-radius: 18px;
+  min-width: 235px;
+  box-shadow: 0 10px 35px #0022383d;
+}
+.exchange-hero-stock > svg {
+  color: #98eee0;
+  margin-bottom: 12px;
+}
+.exchange-hero-stock small {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #c4e7ed;
+}
+.exchange-hero-stock strong {
+  display: block;
+  font-size: 42px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.exchange-hero-stock strong span {
+  font-size: 20px;
+  font-weight: 400;
+  color: #bce8ee;
+}
+.exchange-hero-stock p {
+  font-size: 14px;
+  color: #d2e6ec;
+}
+.exchange-hero-stock a {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  color: #acffee;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #ffffff30;
+}
+.hero-image-note {
+  position: absolute;
+  bottom: 8px;
+  left: 36px;
+  font-size: 12px;
+  color: #c5e2ed;
+}
+.export-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 8px 26px;
+  font-size: 14px;
+  color: #3c647d;
+}
+.export-strip span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.export-strip svg {
+  color: #008c94;
+}
+.collection-heading {
+  margin: 0 0 18px;
+}
+.collection-heading h2 {
+  font-size: 30px !important;
+  letter-spacing: -1px;
+  color: #12394f;
+}
+.collection-heading .eyebrow {
+  font-size: 12px;
+  color: #476d83;
+}
+.collection-heading h2 span {
+  font-size: 14px;
+  color: #5f7b8d;
+  margin-left: 14px;
+}
+.collection-price-note {
+  font-size: 14px;
+  color: #496b80;
+}
+.collection-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  background: #ffffffb5;
+  padding: 14px;
+  border: 1px solid #d4e2eb;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 5px 18px #15445d08;
+}
+.collection-tabs {
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.collection-tabs button {
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #4c657b;
+}
+.collection-tabs button.selected {
+  background: #083e58;
+  box-shadow: 0 5px 14px #09344825;
+  border-radius: 10px;
+}
+.collection-tools {
+  width: 100%;
+  gap: 12px;
+}
+.collection-search {
+  width: auto;
+  flex: 1;
+}
+.collection-search input {
+  font-size: 14px !important;
+  height: 46px !important;
+  background: white !important;
+}
+.collection-search > svg {
+  top: 14px;
+}
+.collection-tools [data-slot='native-select-wrapper'] {
+  width: 210px;
+}
+.collection-tools select {
+  height: 46px;
+  font-size: 14px;
+}
+.results-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 2px 18px;
+  color: #506b7f;
+  font-size: 12px;
+}
+.results-line > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.seafood-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.seafood-card {
+  border: 1px solid #c9dce8;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px #0a344614;
+  background: #fff;
+}
+.seafood-card:hover {
+  border-color: #0797a4;
+  box-shadow: 0 18px 40px #06385426;
+  transform: translateY(-5px);
+}
+.seafood-photo {
+  height: 225px;
+  background: #e0ebf1;
+}
+.seafood-photo > img {
+  object-fit: cover;
+}
+.species-4 .seafood-photo > img,
+.species-6 .seafood-photo > img,
+.species-7 .seafood-photo > img,
+.species-8 .seafood-photo > img {
+  object-fit: contain;
+  background: #f2f5f6;
+}
+.seafood-photo:after {
+  background: linear-gradient(0deg, #021e3990, transparent 40%);
+}
+.stock-lozenge {
+  font-size: 12px;
+  background: #f5fffbee;
+  color: #085447;
+  padding: 8px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #08293720;
+}
+.photo-caption {
+  font-size: 12px;
+  color: white;
+}
+.seafood-info {
+  padding: 22px;
+}
+.seafood-origin {
+  font-size: 12px;
+  color: #52738a;
+  gap: 8px;
+  align-items: flex-start;
+}
+.seafood-origin > span {
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+.seafood-origin svg {
+  flex-shrink: 0;
+}
+.seafood-info h3 {
+  font-size: 24px;
+  color: #102f49;
+  margin: 12px 0 7px;
+}
+.seafood-info > p {
+  font-size: 14px;
+  color: #567083;
+}
+.product-route {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #4b758b;
+  margin-top: 12px;
+}
+.product-route svg {
+  flex-shrink: 0;
+}
+.seafood-price {
+  margin-top: 18px;
+  padding-top: 16px;
+  flex-wrap: wrap;
+}
+.seafood-price b {
+  font-size: 27px;
+  color: #083e58;
+}
+.seafood-price small {
+  font-size: 12px;
+  color: #587587;
+  margin-top: 4px;
+}
+.seafood-price div > span {
+  font-size: 12px;
+  color: #5c7586;
+}
+.trade-label {
+  font-size: 14px;
+  color: #007b8d;
+}
+.product-open {
+  background: #03516bbb;
+  border-color: #cbffff6b;
+}
+.tank-showroom {
+  margin-top: 36px;
+  grid-template-columns: 260px minmax(0, 1fr);
+  border-radius: 20px;
+  box-shadow: 0 12px 34px #0d3d5314;
+  scroll-margin-top: 100px;
+}
+.showroom-title .eyebrow {
+  font-size: 12px;
+}
+.showroom-title h2 {
+  font-size: 24px;
+}
+.showroom-content > p {
+  font-size: 14px;
+  color: #56768a;
+}
+.tank-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.tank-options button {
+  min-width: 0;
+  flex-wrap: wrap;
+  border-radius: 12px;
+  min-height: 100px;
+}
+.tank-options b {
+  font-size: 14px;
+}
+.tank-options small {
+  font-size: 12px;
+  white-space: normal;
+  color: #4e7289;
+}
+.tank-options strong {
+  font-size: 22px;
+}
+.tank-selection {
+  font-size: 14px;
+}
+.tank-selection > small {
+  font-size: 12px;
+  color: #55748b;
+}
+.catalogue-footnote {
+  font-size: 12px;
+  color: #567286;
+  line-height: 1.8;
+}
+.catalogue-footnote a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.origin-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: #edf6fa;
+  border: 1px solid #cfdee9;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.origin-details span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.origin-details b {
+  font-size: 12px;
+  color: #547184;
+}
+.shipment-card {
+  border: 1px solid #cbdde9;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px #10354d0f;
+  margin: 0 0 22px;
+  overflow: hidden;
+}
+.shipment-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: #f6faff;
+  border-bottom: 1px solid #e1ebf2;
+  padding: 16px 24px;
+  font-size: 13px;
+  color: #526b7e;
+}
+.shipment-top > span:first-child {
+  font-weight: 750;
+  color: #1b4762;
+}
+.shipment-top .status-pill {
+  margin-left: auto;
+}
+.shipment-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+}
+.shipment-symbol {
+  padding: 15px;
+  border-radius: 14px;
+  background: #e5f4f7;
+  color: #137187;
+}
+.shipment-product {
+  flex: 1;
+}
+.shipment-product h2 {
+  font-size: 22px;
+}
+.shipment-product p {
+  font-size: 14px;
+  color: #526e80;
+  margin-top: 6px;
+}
+.shipment-destination {
+  margin-right: 12px;
+  max-width: 200px;
+}
+.shipment-destination small {
+  display: block;
+  font-size: 12px;
+  color: #638093;
+  margin-bottom: 6px;
+}
+.shipment-destination b {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+.shipment-total {
+  font-size: 24px;
+  white-space: nowrap;
+  color: #143c55;
+}
+.shipment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 24px 22px;
+}
+.shipment-actions > p {
+  font-size: 14px;
+  color: #496c81;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.shipment-actions button {
+  flex-shrink: 0;
+  min-height: 44px;
+  border-color: #b6d4e1;
+  color: #08637c;
+}
+.rotated {
+  transform: rotate(180deg);
+}
+.shipment-tracking {
+  background: linear-gradient(#f0f8fc, #fff);
+  border-top: 1px solid #cbdee9;
+  padding: 26px 28px;
+}
+.tracking-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #0c617a;
+}
+.tracking-heading .eyebrow {
+  font-size: 12px;
+}
+.tracking-heading h3 {
+  font-size: 24px;
+  font-weight: 650;
+  margin-top: 6px;
+  color: #123b52;
+}
+.shipment-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 30px 0 24px;
+  margin: 0;
+  list-style: none;
+}
+.shipment-steps li {
+  position: relative;
+  padding-right: 12px;
+}
+.shipment-steps li:after {
+  content: '';
+  height: 3px;
+  background: #cadce6;
+  position: absolute;
+  left: 34px;
+  right: 0;
+  top: 16px;
+}
+.shipment-steps li.complete:after {
+  background: #159991;
+}
+.shipment-steps li:last-child:after {
+  display: none;
+}
+.milestone-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #e6eef3;
+  border: 2px solid #c5d6e2;
+  color: #6b8394;
+  font-size: 14px;
+  font-weight: 700;
+}
+.complete .milestone-marker,
+.current .milestone-marker {
+  background: #087f79;
+  color: white;
+  border-color: #087f79;
+}
+.current .milestone-marker {
+  box-shadow: 0 0 0 5px #16a29220;
+}
+.shipment-steps li > div {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.shipment-steps b {
+  font-size: 14px;
+  color: #284e64;
+}
+.shipment-steps span:not(.milestone-marker) {
+  font-size: 12px;
+  color: #5a7486;
+}
+.shipment-steps small {
+  font-size: 12px;
+  color: #547185;
+}
+.shipment-steps .current b {
+  color: #027267;
+}
+.upcoming b {
+  font-weight: 500;
+}
+.tracking-log {
+  border-top: 1px solid #d9e6ee;
+  padding-top: 20px;
+}
+.tracking-log h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.tracking-event {
+  display: grid;
+  grid-template-columns: 155px 1fr;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e7eef3;
+}
+.tracking-event time {
+  font-size: 12px;
+  color: #5c788c;
+  padding-top: 3px;
+}
+.tracking-event p {
+  font-size: 14px;
+  color: #587284;
+  line-height: 1.6;
+}
+.tracking-event b {
+  display: block;
+  color: #1e4e64;
+  margin-bottom: 4px;
+}
+.tracking-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 18px;
+}
+.tracking-footer button {
+  color: #97523b;
+  min-height: 44px;
+}
+.tracking-footer .download {
+  font-size: 14px;
+}
+.tracking-disclosure {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #637c8b;
+  margin-top: 16px;
+}
+.cancelled-note {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #fff0e8;
+  color: #8a4d2b;
+  padding: 18px;
+  border-radius: 12px;
+  margin: 20px 0;
+  font-size: 14px;
+}
+.is-cancelled .status-pill {
+  background: #fbebe4;
+  color: #8e4a30;
+}
+@media (min-width: 1600px) {
+  .seafood-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1200px) {
+  .seafood-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .exchange-hero-stock {
+    min-width: 200px;
+    padding: 18px;
+  }
+  .tank-showroom {
+    grid-template-columns: 1fr;
+  }
+  .showroom-image {
+    height: 190px;
+    max-height: 190px;
+  }
+  .shipment-destination {
+    display: none;
+  }
+  .collection-heading h2 {
+    font-size: 26px !important;
+  }
+}
+@media (max-width: 850px) {
+  .exchange-hero-stock {
+    display: none;
+  }
+  .exchange-hero {
+    padding: 28px;
+    min-height: 260px;
+  }
+  .exchange-hero h1 {
+    font-size: 40px;
+  }
+  .export-strip {
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+  .shipment-steps b {
+    font-size: 14px;
+  }
+  .shipment-top {
+    gap: 10px;
+  }
+}
+@media (max-width: 760px) {
+  .exchange-hero {
+    min-height: 250px;
+    padding: 26px 24px;
+    border-radius: 20px;
+  }
+  .exchange-hero h1 {
+    font-size: 38px;
+  }
+  .exchange-hero .hero-kicker {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .exchange-hero-copy > p:last-child {
+    font-size: 14px;
+  }
+  .hero-image-note {
+    left: 24px;
+  }
+  .collection-heading h2 span {
+    margin: 8px 0 0;
+    font-size: 14px;
+  }
+  .collection-controls {
+    padding: 10px;
+  }
+  .collection-tabs {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+  .collection-tabs button {
+    font-size: 14px;
+    flex-shrink: 0;
+    padding: 10px 12px;
+  }
+  .collection-tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .collection-tools [data-slot='native-select-wrapper'],
+  .collection-search {
+    width: 100%;
+  }
+  .collection-search input {
+    font-size: 16px !important;
+  }
+  .results-line > span:last-child {
+    display: none;
+  }
+  .seafood-cards {
+    gap: 18px;
+    grid-template-columns: 1fr;
+  }
+  .seafood-photo {
+    height: 240px;
+  }
+  .seafood-info {
+    padding: 22px;
+  }
+  .seafood-info h3 {
+    font-size: 26px;
+  }
+  .seafood-origin {
+    font-size: 12px;
+  }
+  .seafood-price {
+    flex-wrap: nowrap;
+  }
+  .trade-label {
+    width: auto;
+    font-size: 14px;
+  }
+  .photo-caption,
+  .stock-lozenge {
+    font-size: 12px;
+  }
+  .tank-options {
+    grid-template-columns: 1fr;
+  }
+  .tank-options button {
+    min-height: 76px;
+    flex-wrap: nowrap;
+    padding: 14px;
+  }
+  .tank-options strong {
+    width: auto;
+    margin: 0 0 0 auto;
+  }
+  .tank-water {
+    display: block;
+  }
+  .tank-options b {
+    font-size: 14px;
+  }
+  .tank-options small {
+    font-size: 12px;
+  }
+  .showroom-content {
+    padding: 22px;
+  }
+  .showroom-title h2 {
+    font-size: 24px;
+  }
+  .shipment-top {
+    padding: 16px;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .shipment-top > span:nth-child(2) {
+    order: 3;
+    width: 100%;
+  }
+  .shipment-summary {
+    padding: 20px 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .shipment-product {
+    min-width: 60%;
+  }
+  .shipment-product h2 {
+    font-size: 20px;
+  }
+  .shipment-symbol {
+    padding: 12px;
+  }
+  .shipment-destination {
+    display: block;
+    max-width: none;
+    margin: 0;
+    flex: 1;
+  }
+  .shipment-total {
+    font-size: 22px;
+  }
+  .shipment-actions {
+    padding: 0 16px 18px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .shipment-actions button {
+    width: 100%;
+  }
+  .shipment-tracking {
+    padding: 24px 18px;
+  }
+  .shipment-steps {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 24px 0;
+  }
+  .shipment-steps li {
+    display: flex;
+    gap: 16px;
+    padding: 0 0 26px;
+  }
+  .shipment-steps li > div {
+    margin: 0;
+    gap: 5px;
+  }
+  .shipment-steps li:after {
+    height: auto;
+    width: 3px;
+    top: 34px;
+    bottom: 0;
+    left: 16px;
+    right: auto;
+  }
+  .milestone-marker {
+    flex-shrink: 0;
+  }
+  .shipment-steps li:last-child {
+    padding-bottom: 0;
+  }
+  .tracking-event {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .tracking-footer {
+    flex-wrap: wrap;
+  }
+  .origin-details {
+    grid-template-columns: 1fr;
+  }
+  .export-strip span {
+    gap: 5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bh *,
+  .bh *:before,
+  .bh *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.bh {
+  --ink: #102c46;
+  --line: #d1e1ed;
+  --primary: #007b9b;
+  background:
+    radial-gradient(ellipse at 90% 0, #73dbe93d, transparent 45%),
+    linear-gradient(140deg, #e3eff8, #f4f8fc 65%);
+  color: var(--ink);
+}
+.rail {
+  background: linear-gradient(170deg, #08192e 8%, #063b50 100%);
+  box-shadow: 8px 0 35px #082b4214;
+  padding: 30px 16px;
+  width: 224px;
+}
+.rail nav {
+  margin-top: 36px;
+  gap: 8px;
+}
+.rail nav button {
+  color: #adc3d4;
+  min-height: 48px;
+  font-size: 14px;
+  border-radius: 12px;
+}
+.rail nav button.active {
+  background: linear-gradient(100deg, #13627a, #0c405b);
+  box-shadow:
+    inset 3px 0 #69f0df,
+    0 6px 20px #0003;
+  color: #fff;
+}
+.rail-bottom button {
+  margin-top: 24px;
+  min-height: 44px;
+  font-size: 14px;
+}
+.brand-icon {
+  background: #96eee1;
+  box-shadow: 0 0 30px #61eddd30;
+}
+.brand strong span {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+.workspace-main {
+  margin-left: 224px;
+  min-width: 0;
+}
+.topbar {
+  background: #f8fcffdd;
+  height: 82px;
+  border-bottom: 1px solid #cbdce6;
+  padding: 0 32px;
+}
+.content {
+  padding: 28px 32px 40px;
+  max-width: 1650px;
+}
+.account-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  font-size: 14px;
+}
+.account .avatar {
+  width: 40px;
+  height: 40px;
+  background: #0d4960;
+  color: #caffee;
+}
+.buyer-verified,
+.buyer-pending {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #08715f;
+}
+.buyer-pending {
+  color: #856028;
+}
+.test-login-note {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #476579;
+  margin: -4px 0 12px;
+}
+.demo-login-button {
+  min-height: 50px;
+  background: linear-gradient(110deg, #075f7b, #07899a) !important;
+  color: white !important;
+  box-shadow: 0 7px 22px #06658229;
+}
+.page-title {
+  background:
+    linear-gradient(100deg, #082d49ed, #094761c9),
+    url('/ocean-tanks.png') center 42%/cover;
+  border: 1px solid #28718b;
+  border-radius: 22px;
+  padding: 30px 34px;
+  box-shadow: 0 16px 40px #072f4a1a;
+  margin: 0 0 26px;
+}
+.page-title h1 {
+  color: white;
+  font-size: clamp(28px, 3.3vw, 42px);
+}
+.page-title .eyebrow {
+  color: #8ae4d8;
+  font-size: 12px;
+}
+.page-title > p:last-child {
+  color: #c8e0ed;
+  font-size: 16px;
+  margin-top: 12px;
+  max-width: 760px;
+}
+.panel,
+.stats,
+.dark-panel,
+.order-row {
+  border-radius: 18px;
+  box-shadow: 0 10px 30px #123d5010;
+}
+.stats {
+  gap: 16px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.stat {
+  border: 1px solid #d0e2ee !important;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff, #f6fcff);
+  box-shadow: 0 8px 26px #163d5010;
+  position: relative;
+  overflow: hidden;
+}
+.stat:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 4px;
+  background: #12a5ab;
+  border-radius: 4px;
+}
+.stat span {
+  font-size: 14px;
+  color: #4f6a7c;
+}
+.stat strong {
+  color: #0c4864;
+  font-weight: 700;
+}
+.panel h2 {
+  color: #123950;
+}
+.activity small,
+.order-row small {
+  font-size: 12px;
+  color: #587484;
+}
+.status-pill {
+  font-size: 12px;
+  letter-spacing: 0;
+  background: #e0f3ef;
+  color: #076857;
+}
+.status-banner p,
+.muted,
+.fine {
+  color: #526b7b;
+}
+.bh-dialog {
+  border-radius: 22px !important;
+}
+.bh-dialog .fine {
+  font-size: 12px;
+}
+.bh :focus-visible {
+  outline: 3px solid #00899f;
+  outline-offset: 4px;
+}
+.bh button,
+.bh a {
+  touch-action: manipulation;
+}
+.bh footer {
+  border-top: 1px solid #cbdce7;
+  padding-top: 22px;
+}
+.bh footer span {
+  color: #516c7e;
+}
+@media (max-width: 1100px) {
+  .content {
+    padding: 24px;
+  }
+  .rail {
+    width: 200px;
+  }
+  .workspace-main {
+    margin-left: 200px;
+  }
+  .topbar {
+    padding: 0 24px;
+  }
+}
+@media (max-width: 760px) {
+  .rail {
+    position: static;
+    width: 100%;
+    padding: 18px 16px 12px;
+  }
+  .rail nav {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+  .rail nav button {
+    flex-shrink: 0;
+    min-height: 44px;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .rail-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px 0;
+    margin: 0;
+  }
+  .rail-bottom .connection {
+    font-size: 12px;
+  }
+  .rail-bottom button {
+    margin: 0;
+    min-height: 40px;
+  }
+  .workspace-main {
+    margin-left: 0;
+  }
+  .topbar {
+    height: 76px;
+    padding: 0 16px;
+  }
+  .topbar .crumb,
+  .topbar .slash {
+    display: none;
+  }
+  .account-copy {
+    font-size: 13px;
+  }
+  .content {
+    padding: 20px 16px 32px;
+  }
+  .page-title {
+    padding: 24px;
+    border-radius: 18px;
+  }
+  .page-title > p:last-child {
+    font-size: 14px;
+  }
+  .stats {
+    gap: 9px;
+  }
+  .stat {
+    padding: 18px 12px;
+  }
+  .stat span {
+    font-size: 12px;
+  }
+  .stat strong {
+    font-size: 28px;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .bh-dialog input,
+  .bh-dialog select,
+  .bh input,
+  .bh select {
+    font-size: 16px;
+  }
+  .brand strong {
+    font-size: 24px;
+  }
+}
+@media (max-width: 390px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .stat strong {
+    margin: 0;
+  }
+  .buyer-verified {
+    font-size: 12px;
+  }
+}

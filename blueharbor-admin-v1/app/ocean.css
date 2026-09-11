@@ -1,0 +1,1237 @@
+/* Ocean showroom theme. Shared buyer workflows keep the same data and actions. */
+.bh {
+  --ink: #143446;
+  --teal: #087fac;
+  --line: #dce9ed;
+  --primary: #087fa8;
+  --primary-foreground: #fff;
+  background: #f3f8fa;
+  background-image: linear-gradient(180deg, #e9f6fb 0, #f6fafb 750px);
+}
+.rail {
+  background: #052837;
+  background-image: linear-gradient(180deg, #062a3b 10%, #04384a 100%);
+  width: 220px;
+  padding: 28px 14px;
+}
+.brand {
+  gap: 9px;
+  padding: 0 6px;
+}
+.brand-icon {
+  background: #a4e8f1;
+  color: #063e55;
+  border-radius: 50%;
+  padding: 10px;
+}
+.brand strong {
+  font-size: 22px;
+  letter-spacing: -1.1px;
+}
+.brand strong span {
+  color: #91c1cf;
+  letter-spacing: 2.7px;
+  font-size: 10px;
+}
+.rail .workspace {
+  margin: 30px 0 22px;
+  background: #ffffff06;
+  border-color: #b5e7ef20;
+}
+.rail nav button {
+  font-size: 14px;
+  min-height: 46px;
+  color: #9fbcc9;
+  border-radius: 9px;
+}
+.rail nav button.active {
+  color: #fff;
+  background: #ffffff16;
+  box-shadow: inset 3px 0 #6cdfed;
+  font-weight: 650;
+}
+.rail nav button.active svg {
+  color: #72ddeb;
+}
+.rail-bottom small {
+  color: #8baab6;
+}
+.workspace-main {
+  margin-left: 220px;
+}
+.topbar {
+  height: 72px;
+  background: #f9fdffdf;
+  border-bottom: 1px solid #dce9ed;
+  padding-inline: 34px;
+}
+.topbar b {
+  font-weight: 650;
+}
+.avatar {
+  background: #e0f4f7;
+  color: #146480;
+  border-radius: 50%;
+}
+.content {
+  padding: 26px 32px 36px;
+  max-width: 1610px;
+}
+.content > footer {
+  color: #557e91;
+  font-size: 12px;
+  margin-top: 35px;
+}
+.content > footer span {
+  font-size: 12px;
+  color: #6c8793;
+}
+.demo-ribbon {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 16px;
+  color: #226384;
+  font-size: 13px;
+  background: #e0f2fa;
+  border: 1px solid #c8e5f0;
+  border-radius: 9px;
+  padding: 11px 15px;
+}
+.demo-ribbon > span {
+  margin-left: auto;
+  color: #547c8e;
+  font-size: 12px;
+}
+.ocean-hero {
+  min-height: 350px;
+  position: relative;
+  isolation: isolate;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #073049;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 14px 40px #093c5114;
+}
+.ocean-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -3;
+  object-position: center 47%;
+}
+.ocean-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, #012435e8 0%, #01364caa 45%, #02516c14 75%),
+    linear-gradient(0deg, #01233370, transparent 45%);
+}
+.ocean-hero-copy {
+  padding: 36px 40px;
+  max-width: 680px;
+  position: relative;
+  z-index: 1;
+}
+.hero-kicker {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #a4d5e0;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin: 0 0 19px;
+}
+.hero-kicker > span {
+  background: #70e0e5;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #70e0e5;
+}
+.ocean-hero h1 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(34px, 3.7vw, 58px);
+  font-weight: 500;
+  letter-spacing: -2px;
+  line-height: 1.06;
+  color: white;
+}
+.ocean-hero h1 span {
+  color: #95deed;
+}
+.ocean-hero-copy > p:not(.hero-kicker) {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #c0dce5;
+  margin: 18px 0 24px;
+  max-width: 490px;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-actions button {
+  min-height: 45px;
+  border-radius: 7px;
+  padding-inline: 19px;
+  font-size: 13px;
+  gap: 10px;
+}
+.hero-actions .ocean-cta {
+  color: #064056;
+  background: #c5f5f5;
+  box-shadow: 0 5px 15px #00334b20;
+}
+.hero-actions .ocean-cta:hover {
+  background: white;
+  transform: translateY(-1px);
+}
+.hero-actions .ocean-demo {
+  color: white;
+  background: #ffffff0d;
+  border: 1px solid #ffffff30;
+}
+.hero-actions .ocean-demo:hover {
+  background: #ffffff20;
+}
+.hero-tank-ticket {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  background: #022c4470;
+  border: 1px solid #a7ecff50;
+  border-radius: 14px;
+  backdrop-filter: blur(18px);
+  margin: 65px 32px 0 0;
+  padding: 20px;
+  width: 225px;
+  box-shadow: 0 15px 40px #00213425;
+}
+.ticket-icon {
+  display: grid;
+  place-items: center;
+  color: #99e5ed;
+  background: #a0e4eb15;
+  padding: 12px;
+  border-radius: 10px;
+}
+.hero-tank-ticket small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #97c7d6;
+}
+.hero-tank-ticket strong {
+  display: block;
+  font-size: 35px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-top: 5px;
+}
+.hero-tank-ticket em {
+  font-size: 14px;
+  font-style: normal;
+  color: #a1c8d6;
+  letter-spacing: 0;
+}
+.hero-tank-ticket div > span {
+  font-size: 11px;
+  color: #acd0da;
+  display: block;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.ticket-bottom {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 10px;
+  border-top: 1px solid #ffffff20;
+  padding-top: 12px;
+  width: 100%;
+  color: #bfdee5;
+}
+.ticket-bottom .dot {
+  background: #88e8df;
+}
+.image-disclosure {
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  color: #acd3df;
+  font-size: 10px;
+}
+.ocean-assurance {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 20px 3px 25px;
+  color: #547c8b;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.ocean-assurance > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ocean-assurance svg {
+  color: #3c98b4;
+}
+.ocean-assurance .assurance-caption {
+  margin-left: auto;
+  color: #8099a5;
+  font-size: 11px;
+}
+.tank-showroom {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  border: 1px solid #d9e8ee;
+  border-radius: 14px;
+  background: white;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.showroom-image {
+  position: relative;
+  min-height: 218px;
+  overflow: hidden;
+  background: #09465d;
+}
+.showroom-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  object-position: 50%;
+}
+.showroom-image:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 40%, #032e42c9);
+}
+.showroom-image > span {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+  z-index: 1;
+  color: #d6f1f6;
+}
+.showroom-content {
+  padding: 22px 26px;
+}
+.showroom-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.showroom-title .eyebrow {
+  font-size: 10px;
+  margin: 0 0 6px;
+  color: #588a9f;
+  letter-spacing: 1.7px;
+}
+.showroom-title h2 {
+  font-size: 24px;
+  letter-spacing: -0.8px;
+  font-weight: 600;
+}
+.sample-chip {
+  font-size: 10px;
+  color: #698a98;
+  background: #f0f6f8;
+  border-radius: 5px;
+  padding: 5px 8px;
+  white-space: nowrap;
+}
+.showroom-content > p {
+  color: #6a8a99;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 7px 0 16px;
+}
+.tank-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.tank-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e1ebf0;
+  border-radius: 8px;
+  background: #f9fcfd;
+  padding: 12px 10px;
+  text-align: left;
+}
+.tank-options button:hover,
+.tank-options button.selected {
+  border-color: #55b1ce;
+  background: #edfaff;
+  box-shadow: 0 0 0 1px #55b1ce20;
+}
+.tank-water {
+  background: #e6f4fa;
+  padding: 7px;
+  border-radius: 7px;
+  color: #4192b4;
+}
+.tank-options b {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.tank-options small {
+  font-size: 10px;
+  color: #7b99a7;
+  display: block;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+.tank-options strong {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 600;
+}
+.tank-options strong small {
+  display: inline;
+  font-size: 10px;
+}
+.tank-selection {
+  border-top: 1px solid #dce9ee;
+  margin-top: 16px;
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #4b7e94;
+}
+.tank-selection > small {
+  display: block;
+  width: 100%;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #7c97a4;
+}
+.fish-collection {
+  scroll-margin-top: 90px;
+}
+.collection-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.collection-heading .eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  margin: 0 0 6px;
+  color: #608999;
+}
+.collection-heading h2 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.collection-heading h2 span {
+  margin-left: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #7894a1;
+}
+.collection-price-note {
+  color: #7c939d;
+  font-size: 11px;
+}
+.collection-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #dce8ed;
+  padding-bottom: 17px;
+}
+.collection-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.collection-tabs button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 7px;
+  padding: 10px 14px;
+  color: #678697;
+  white-space: nowrap;
+}
+.collection-tabs button.selected {
+  background: #087fa8;
+  color: white;
+  box-shadow: 0 4px 10px #0780a520;
+}
+.collection-tabs button:hover:not(.selected) {
+  background: #e8f1f5;
+}
+.collection-tools {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.collection-search {
+  position: relative;
+  width: 200px;
+}
+.collection-search > svg {
+  position: absolute;
+  top: 12px;
+  left: 11px;
+  color: #92a9b3;
+}
+.collection-search input {
+  padding-left: 35px !important;
+  font-size: 12px !important;
+  height: 40px !important;
+  border-color: #dce7ed !important;
+}
+.collection-tools [data-slot='native-select-wrapper'] {
+  width: 145px;
+}
+.collection-tools select {
+  height: 40px;
+  font-size: 11px;
+  border-color: #dce7ed;
+}
+.seafood-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.seafood-card {
+  display: block;
+  min-width: 0;
+  border: 1px solid #dce7ec;
+  border-radius: 13px;
+  background: #fff;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 3px 7px #183d5010;
+  transition:
+    box-shadow 0.25s,
+    transform 0.25s !important;
+}
+.seafood-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px #0c49661b;
+  border-color: #add4e1;
+}
+.seafood-photo {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #0b4a66;
+}
+.seafood-photo > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.65s ease;
+}
+.seafood-card:hover .seafood-photo > img {
+  transform: scale(1.045);
+}
+.seafood-photo:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #00304b7a, transparent 55%);
+  pointer-events: none;
+}
+.stock-lozenge {
+  position: absolute;
+  z-index: 1;
+  top: 13px;
+  left: 13px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #146377;
+  background: #f1fdffef;
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-size: 10px;
+  font-weight: 650;
+  backdrop-filter: blur(5px);
+}
+.stock-lozenge .dot {
+  background: #21a5a1;
+}
+.photo-caption {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  font-size: 10px;
+  color: #c6e4ed;
+  z-index: 1;
+}
+.product-open {
+  position: absolute;
+  bottom: 12px;
+  right: 13px;
+  z-index: 1;
+  color: #fff;
+  background: #f5fdff20;
+  border: 1px solid #ffffff50;
+  border-radius: 50%;
+  padding: 8px;
+  backdrop-filter: blur(6px);
+}
+.seafood-info {
+  padding: 20px;
+}
+.seafood-origin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #7b99a6;
+  font-size: 11px;
+}
+.seafood-origin i {
+  font-style: normal;
+  margin: 0 5px;
+  color: #bdcfd6;
+}
+.seafood-origin > span:last-child {
+  color: #66a2b9;
+}
+.seafood-info h3 {
+  font-size: 22px;
+  letter-spacing: -0.6px;
+  color: #163d51;
+  line-height: 1.25;
+  margin: 10px 0 7px;
+  font-weight: 650;
+}
+.seafood-info > p {
+  font-size: 12px;
+  color: #7c929f;
+}
+.seafood-price {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #eaf0f3;
+  margin-top: 18px;
+  padding-top: 17px;
+}
+.seafood-price b {
+  font-size: 23px;
+  font-weight: 650;
+  color: #184158;
+  letter-spacing: -0.7px;
+}
+.seafood-price div > span {
+  font-size: 11px;
+  color: #8ca4ae;
+}
+.seafood-price small {
+  display: block;
+  font-size: 10px;
+  color: #8fa3ad;
+  margin-top: 3px;
+}
+.trade-label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #1383a6;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.catalogue-footnote {
+  font-size: 11px;
+  color: #87a0ac;
+  line-height: 1.8;
+  margin: 17px 0;
+}
+.demo-invitation {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid #cfe8f1;
+  background: #e8f5fb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 25px;
+  color: #277798;
+}
+.demo-invitation > svg {
+  flex-shrink: 0;
+}
+.demo-invitation > div {
+  flex: 1;
+}
+.demo-invitation h3 {
+  font-size: 19px;
+  font-weight: 600;
+  color: #28576d;
+}
+.demo-invitation p {
+  font-size: 13px;
+  color: #7395a5;
+  line-height: 1.7;
+  margin-top: 4px;
+}
+.demo-invitation button {
+  font-size: 12px;
+  height: 43px;
+  padding-inline: 17px;
+  border-radius: 7px;
+  background: #087fa8;
+}
+.order-photo {
+  position: relative;
+  height: 190px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b4360;
+}
+.order-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.order-photo:after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(transparent, #022d4780);
+}
+.order-photo span {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  z-index: 1;
+  font-size: 13px;
+  color: #d4f6ff;
+}
+.bh-dialog {
+  --primary: #087fa8;
+  --primary-foreground: #fff;
+  border: 1px solid #cfe3ee !important;
+  box-shadow: 0 25px 95px #0024393b;
+  color: #224b60;
+}
+.demo-login-button {
+  background: #e6f6fa !important;
+  color: #126d8c !important;
+  border: 1px solid #bbe3ee;
+  height: 46px;
+  margin-bottom: 5px;
+}
+.page-title h1 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  color: #153f54;
+  letter-spacing: -1.5px;
+}
+.page-title .eyebrow {
+  color: #4d8da6;
+}
+.dark-panel {
+  background-image:
+    linear-gradient(100deg, #042d45eb, #06536bc4), url('/ocean-tanks.png');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #29789770;
+  box-shadow: 0 12px 35px #0436471a;
+}
+.dark-panel button {
+  background: #b9edf4;
+  color: #155b72;
+}
+.panel {
+  border-color: #dbe8ed;
+  box-shadow: 0 3px 12px #264e6105;
+}
+.status-pill {
+  background: #e1f3fa;
+  color: #277b9a;
+}
+.order-icon {
+  background: #eaf6fb;
+  color: #4c99b4;
+}
+.stat strong {
+  color: #1d5873;
+}
+.stat span {
+  color: #7797a6;
+}
+.ai-panel {
+  background: linear-gradient(110deg, #e9f5fc, #eef9fd);
+  border-color: #cde5f2;
+}
+.bh :focus-visible {
+  outline-color: #22a7d0;
+}
+@media (min-width: 1550px) {
+  .seafood-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .ocean-hero {
+    min-height: 385px;
+  }
+  .ocean-hero-copy {
+    padding: 42px 48px;
+  }
+  .hero-tank-ticket {
+    margin-right: 48px;
+    width: 255px;
+  }
+}
+@media (max-width: 1250px) {
+  .rail {
+    width: 196px;
+  }
+  .workspace-main {
+    margin-left: 196px;
+  }
+  .content {
+    padding: 24px;
+  }
+  .topbar {
+    padding: 0 24px;
+  }
+  .brand strong {
+    font-size: 20px;
+  }
+  .ocean-hero-copy {
+    padding: 32px;
+  }
+  .ocean-hero h1 {
+    font-size: 43px;
+  }
+  .hero-tank-ticket {
+    width: 195px;
+    margin-right: 24px;
+    padding: 16px;
+  }
+  .ticket-icon {
+    display: none;
+  }
+  .tank-showroom {
+    grid-template-columns: 190px 1fr;
+  }
+  .showroom-content {
+    padding: 20px;
+  }
+  .tank-options {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .tank-water {
+    display: none;
+  }
+  .tank-options strong {
+    font-size: 14px;
+  }
+  .tank-options button {
+    padding: 10px 8px;
+  }
+  .collection-controls {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .collection-tools {
+    width: 100%;
+  }
+  .collection-search {
+    flex: 1;
+  }
+  .seafood-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .seafood-photo {
+    height: 210px;
+  }
+  .ocean-assurance .assurance-caption {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  .hero-tank-ticket {
+    display: none;
+  }
+  .ocean-hero-copy {
+    max-width: 100%;
+  }
+  .ocean-shade {
+    background: linear-gradient(90deg, #012435ed, #01364c60);
+  }
+  .ocean-hero h1 {
+    font-size: 42px;
+  }
+  .tank-showroom {
+    grid-template-columns: 1fr;
+  }
+  .showroom-image {
+    min-height: 150px;
+    max-height: 150px;
+  }
+  .showroom-image img {
+    object-position: center 40%;
+  }
+  .ocean-hero {
+    min-height: 325px;
+  }
+  .image-disclosure {
+    font-size: 9px;
+  }
+  .demo-invitation {
+    flex-wrap: wrap;
+  }
+  .demo-invitation button {
+    margin-left: 45px;
+  }
+  .collection-price-note {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .rail {
+    position: static;
+    width: auto;
+    padding: 17px 18px 10px;
+  }
+  .brand strong {
+    font-size: 23px;
+  }
+  .brand-icon {
+    padding: 8px;
+  }
+  .rail nav {
+    margin-top: 16px;
+  }
+  .rail nav button {
+    min-height: 40px;
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+  .rail nav button.active {
+    box-shadow: none;
+    background: #276176;
+  }
+  .workspace-main {
+    margin: 0;
+  }
+  .topbar {
+    height: 58px;
+    padding: 0 18px;
+  }
+  .content {
+    padding: 18px 16px 30px;
+  }
+  .demo-ribbon {
+    flex-wrap: wrap;
+    font-size: 12px;
+    gap: 7px;
+    padding: 10px 12px;
+  }
+  .demo-ribbon > span {
+    margin-left: 24px;
+    font-size: 11px;
+    width: 100%;
+  }
+  .ocean-hero {
+    min-height: 350px;
+    border-radius: 14px;
+  }
+  .ocean-hero-copy {
+    padding: 30px 24px;
+  }
+  .ocean-hero h1 {
+    font-size: 42px;
+    letter-spacing: -1.8px;
+  }
+  .hero-kicker {
+    font-size: 9px;
+    letter-spacing: 1.6px;
+  }
+  .ocean-hero-copy > p:not(.hero-kicker) {
+    font-size: 14px;
+    max-width: 360px;
+    line-height: 1.7;
+  }
+  .hero-actions {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hero-actions button {
+    font-size: 12px;
+    height: 43px;
+    padding-inline: 13px;
+  }
+  .image-disclosure {
+    right: 14px;
+    bottom: 9px;
+    font-size: 9px;
+  }
+  .ocean-hero-image {
+    object-position: 60%;
+  }
+  .ocean-assurance {
+    padding: 16px 0 22px;
+    gap: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  .ocean-assurance svg {
+    width: 14px;
+  }
+  .ocean-assurance > span {
+    gap: 4px;
+  }
+  .showroom-image {
+    min-height: 165px;
+  }
+  .showroom-content {
+    padding: 20px 16px;
+  }
+  .showroom-title h2 {
+    font-size: 24px;
+  }
+  .sample-chip {
+    font-size: 9px;
+  }
+  .tank-options {
+    gap: 7px;
+  }
+  .tank-options button {
+    flex-wrap: wrap;
+    padding: 11px 9px;
+  }
+  .tank-options b {
+    font-size: 11px;
+  }
+  .tank-options small {
+    font-size: 9px;
+  }
+  .tank-options strong {
+    margin-left: 0;
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    font-size: 18px;
+  }
+  .showroom-content > p {
+    font-size: 13px;
+  }
+  .collection-heading h2 {
+    font-size: 28px;
+  }
+  .collection-heading h2 span {
+    display: block;
+    font-size: 11px;
+    margin: 7px 0 0;
+  }
+  .collection-heading .eyebrow {
+    font-size: 9px;
+  }
+  .collection-tabs {
+    gap: 3px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .collection-tabs button {
+    font-size: 11px;
+    padding: 9px 10px;
+  }
+  .collection-tools {
+    gap: 8px;
+  }
+  .collection-search {
+    min-width: 0;
+  }
+  .collection-tools [data-slot='native-select-wrapper'] {
+    width: 132px;
+  }
+  .seafood-cards {
+    gap: 14px;
+  }
+  .seafood-photo {
+    height: 165px;
+  }
+  .seafood-info {
+    padding: 15px;
+  }
+  .seafood-origin {
+    font-size: 10px;
+  }
+  .seafood-origin i {
+    margin: 0 2px;
+  }
+  .seafood-origin > span:last-child {
+    display: none;
+  }
+  .seafood-info h3 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .seafood-info > p {
+    font-size: 11px;
+  }
+  .stock-lozenge {
+    font-size: 9px;
+    left: 9px;
+    top: 9px;
+    padding: 6px 7px;
+  }
+  .photo-caption {
+    font-size: 9px;
+    left: 10px;
+    bottom: 10px;
+    max-width: 100px;
+  }
+  .product-open {
+    padding: 5px;
+    right: 8px;
+    bottom: 9px;
+  }
+  .product-open svg {
+    width: 18px;
+    height: 18px;
+  }
+  .seafood-price {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 14px;
+  }
+  .seafood-price b {
+    font-size: 22px;
+  }
+  .seafood-price small {
+    font-size: 10px;
+  }
+  .trade-label {
+    font-size: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .catalogue-footnote {
+    font-size: 11px;
+  }
+  .demo-invitation {
+    padding: 20px;
+    gap: 12px;
+  }
+  .demo-invitation > div {
+    min-width: 75%;
+  }
+  .demo-invitation p {
+    font-size: 13px;
+  }
+  .demo-invitation button {
+    margin-left: 0;
+    width: 100%;
+  }
+  .demo-invitation h3 {
+    font-size: 19px;
+  }
+  .order-photo {
+    height: 160px;
+  }
+}
+@media (max-width: 400px) {
+  .seafood-cards {
+    grid-template-columns: 1fr;
+  }
+  .seafood-photo {
+    height: 210px;
+  }
+  .seafood-info {
+    padding: 20px;
+  }
+  .seafood-price {
+    flex-wrap: nowrap;
+  }
+  .trade-label {
+    width: auto;
+  }
+  .ocean-hero h1 {
+    font-size: 36px;
+  }
+  .ocean-hero-copy {
+    padding: 30px 20px;
+  }
+  .ocean-assurance {
+    justify-content: flex-start;
+  }
+  .tank-options {
+    grid-template-columns: 1fr;
+  }
+  .tank-options button {
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 12px;
+  }
+  .tank-options strong {
+    width: auto;
+    margin-left: auto;
+    margin-top: 0;
+  }
+  .tank-water {
+    display: block;
+  }
+  .tank-options b {
+    font-size: 13px;
+  }
+  .tank-options small {
+    font-size: 11px;
+  }
+  .collection-tabs {
+    justify-content: flex-start;
+  }
+  .collection-tabs button {
+    font-size: 11px;
+    padding: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ocean-hero,
+  .seafood-card,
+  .seafood-photo img {
+    animation: none !important;
+    transition: none !important;
+  }
+}

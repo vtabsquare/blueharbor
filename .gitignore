@@ -1,0 +1,29 @@
+# Environment variables (CRITICAL)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Node.js
+**/node_modules/
+**/dist/
+**/.next/
+**/.npm/
+
+# Python
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+
+# Local databases
+**/*.sqlite3
+**/data/
+
+# Logs & Temporary files
+**/*.log
+**/*.zip
+
+# OS & Editor configurations
+**/.DS_Store
+**/.vscode/
+**/.idea/
