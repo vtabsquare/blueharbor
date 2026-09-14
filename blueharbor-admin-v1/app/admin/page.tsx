@@ -276,7 +276,7 @@ export default function Admin() {
             Buyer verification, warehouse inventory and shipment operations—with
             traceable decisions.
           </p>
-          <a href="/">
+          <a href={process.env.NEXT_PUBLIC_BUYER_URL || "http://localhost:3000"}>
             Open buyer marketplace <ArrowUpRight size={16} />
           </a>
         </section>

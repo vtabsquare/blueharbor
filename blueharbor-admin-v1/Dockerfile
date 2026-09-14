@@ -24,6 +24,8 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY . .
 
 # Build frontend
+ARG BLUEHARBOR_BUYER_URL
+ENV NEXT_PUBLIC_BUYER_URL=$BLUEHARBOR_BUYER_URL
 RUN npm run build
 
 # Ensure startup script is executable
