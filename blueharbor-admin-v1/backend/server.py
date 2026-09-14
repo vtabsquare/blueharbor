@@ -122,7 +122,12 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError,TypeError,KeyError): self.send({'error':'Invalid input.'},400)
         except cloud_http.CloudError as e: self.send({'error':e.message},e.status)
         except psycopg.IntegrityError: self.send({'error':'This record conflicts with existing data. Check IDs, quantities and required links.'},409)
-        except Exception:
+        except Exception as e:
+            import traceback
+            print(
+                f"DIAGNOSTIC 500: {type(e).__name__}\n{traceback.format_exc()}",
+                flush=True,
+            )
             self.send({'error':'The request could not be completed. Please retry.'},500)
 
     def check_surface(self,path):
