@@ -104,6 +104,9 @@ class Handler(BaseHTTPRequestHandler):
                 raise APIError('Request origin rejected.',403)
             if not write and self.path in ('/api/stream','/api/admin/stream'):
                 return self.stream_changes(self.path.startswith('/api/admin/'))
+            if not write and self.path.split('?')[0] == '/api/health':
+                import realtime_bus
+                return self.send({'status':'ok','service':'blueharbor-supabase','database':'Supabase PostgreSQL','realtime':realtime_bus.status})
             data={}
             if write:
                 length=int(self.headers.get('Content-Length','0'))
@@ -130,9 +133,6 @@ class Handler(BaseHTTPRequestHandler):
         self.check_surface(path)
         if path.startswith('/api/admin/'):
             return admin.route(self,c,path,d,write)
-        if path=='/api/health':
-            import realtime_bus
-            return {'status':'ok','service':'blueharbor-supabase','database':'Supabase PostgreSQL','realtime':realtime_bus.status}
         if path.startswith('/api/product-image/') and not write:
             self.user(c)
             image_id=path.rsplit('/',1)[-1]
