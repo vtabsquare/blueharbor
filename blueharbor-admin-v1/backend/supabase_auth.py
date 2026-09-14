@@ -13,10 +13,11 @@ def current(h,c,staff=False):
     token=token_from(h,staff)
     if not token:raise cloud.CloudError('Please sign in'+(' as staff.' if staff else '.'),401)
     table='staff' if staff else 'users';sessions='staff_sessions' if staff else 'sessions';fk='staff_id' if staff else 'user_id'
+    # The SHA-256 token hash stored at login is the sole authentication gate.
+    # Re-verifying with Supabase on every request causes 500 cascades when
+    # Supabase is slow (cold-starts, transient latency, rate-limits).
     row=c.execute(f'SELECT u.* FROM {table} u JOIN {sessions} s ON s.{fk}=u.id WHERE s.token=? AND s.expires>?'+(' AND u.active=1' if staff else ''),(hashlib.sha256(token.encode()).hexdigest(),int(time.time()))).fetchone()
     if not row:raise cloud.CloudError('Session expired. Please sign in again.',401)
-    identity=cloud.request('/auth/v1/user',token=token)
-    if str(identity.get('id'))!=str(row['auth_uid']):raise cloud.CloudError('Session identity mismatch. Please sign in again.',401)
     return row
 
 def login(h,c,d,S,staff=False):

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 /* Protected images and downloads use direct same-origin requests to retain staff cookies. */
 /* oxlint-disable next/no-img-element, next/no-html-link-for-pages */
 import {
@@ -157,16 +157,28 @@ export default function Admin() {
     [query, setQuery] = useState(''),
     [detail, setDetail] = useState<Row | null>(null),
     [editor, setEditor] = useState<Row | null>(null);
+  // Track whether we have ever successfully loaded state so a transient 500
+  // on page-refresh does not immediately wipe state back to null (which would
+  // show the login screen even though the session is still valid).
+  const stateLoadedRef = useRef(false);
   async function refresh() {
     try {
       const value = await api<State>('state');
+      stateLoadedRef.current = true;
       setState(value);
+      setError('');
       setConnected(true);
     } catch (e) {
       const message = (e as Error).message;
-      if (message.includes('sign in') || message.includes('session'))
+      // Only clear session state on explicit auth rejections (401).
+      // Transient 500 / network errors must never log the user out.
+      if (message.includes('sign in') || message.includes('Session expired') || message.includes('session')) {
         setState(null);
-      else setError(message);
+        stateLoadedRef.current = false;
+      } else {
+        // Keep existing state (user stays on dashboard), just surface the error.
+        setError(message);
+      }
       setConnected(false);
     }
   }
