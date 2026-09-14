@@ -17,7 +17,6 @@
 
 # Local databases
 **/*.sqlite3
-**/data/
 
 # Logs & Temporary files
 **/*.log
