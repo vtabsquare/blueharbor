@@ -55,7 +55,6 @@ class Store:
     def __init__(self,con):self.con=con;self.uploads=[]
     def execute(self,sql,params=()):
         params=list(params)
-        if re.match(r'\s*(INSERT|UPDATE|DELETE)\b',sql,re.I):self.con.execute('SELECT pg_advisory_xact_lock(724811)')
         match=re.match(r'\s*INSERT INTO (documents|product_images|trade_documents) VALUES\s*\(',sql,re.I)
         if match:
             table=match.group(1);fields=FILES[table];idx=fields.index('content');content=params[idx]

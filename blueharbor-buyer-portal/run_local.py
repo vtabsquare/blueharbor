@@ -96,6 +96,7 @@ def install_backend_dependencies():
         "-r",
         str(REQUIREMENTS),
         "--disable-pip-version-check",
+        "--break-system-packages",
     ]
 
     result = subprocess.run(

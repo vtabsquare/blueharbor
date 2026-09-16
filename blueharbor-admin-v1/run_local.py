@@ -45,7 +45,20 @@ def ready(url,timeout=90):
 def main():
     import cloud_config
     cloud_config.validate()
-    if importlib.util.find_spec('psycopg') is None:raise RuntimeError('Install the database driver: python -m pip install -r backend/requirements.txt')
+    REQUIREMENTS = ROOT / 'backend' / 'requirements.txt'
+    if importlib.util.find_spec('psycopg') is None:
+        print('Installing this application’s backend packages (first run only)...', flush=True)
+        command = [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            str(REQUIREMENTS),
+            "--disable-pip-version-check",
+            "--break-system-packages",
+        ]
+        subprocess.run(command, check=True)
     npm=shutil.which('npm.cmd' if os.name=='nt' else 'npm')
     if not npm:raise RuntimeError('Install Node.js 22.13+ and reopen VS Code.')
     with open(ROOT/'.launcher.lock','a+b') as lock:

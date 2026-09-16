@@ -79,6 +79,11 @@ type State = {
   transport_shipments: Row[];
   shipping_schedule: { vessels: Row[]; sailings: Row[] };
 };
+class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+  }
+}
 async function api<T = Row>(path: string, data?: unknown): Promise<T> {
   const res = await fetch('/api/admin/' + path, {
     credentials: 'same-origin',
@@ -91,7 +96,7 @@ async function api<T = Row>(path: string, data?: unknown): Promise<T> {
         }),
   });
   const value = (await res.json()) as Row;
-  if (!res.ok) throw new Error(value.error || 'Request failed');
+  if (!res.ok) throw new ApiError(value.error || 'Request failed', res.status);
   return value as T;
 }
 const usd = (c: number) =>
@@ -157,11 +162,16 @@ export default function Admin() {
     [query, setQuery] = useState(''),
     [detail, setDetail] = useState<Row | null>(null),
     [editor, setEditor] = useState<Row | null>(null);
+  // `initializing` is true from first mount until the very first refresh()
+  // attempt resolves. While true we render a loading screen instead of the
+  // login form, so a hard refresh never flashes the login page while the
+  // existing session is being re-validated with the backend.
+  const [initializing, setInitializing] = useState(true);
   // Track whether we have ever successfully loaded state so a transient 500
   // on page-refresh does not immediately wipe state back to null (which would
   // show the login screen even though the session is still valid).
   const stateLoadedRef = useRef(false);
-  async function refresh() {
+  async function refresh(fromInit = false) {
     try {
       const value = await api<State>('state');
       stateLoadedRef.current = true;
@@ -169,21 +179,28 @@ export default function Admin() {
       setError('');
       setConnected(true);
     } catch (e) {
-      const message = (e as Error).message;
-      // Only clear session state on explicit auth rejections (401).
-      // Transient 500 / network errors must never log the user out.
-      if (message.includes('sign in') || message.includes('Session expired') || message.includes('session')) {
+      const status = e instanceof ApiError ? e.status : 0;
+      // Only clear session state on an explicit 401 auth rejection.
+      // Transient 500 / network errors (status 0, 429, 500, 502, 503) must
+      // never log the user out — the session is still alive on the backend.
+      if (status === 401) {
         setState(null);
         stateLoadedRef.current = false;
-      } else {
-        // Keep existing state (user stays on dashboard), just surface the error.
-        setError(message);
+      } else if (stateLoadedRef.current) {
+        // Keep existing dashboard state; just surface the transient error.
+        setError((e as Error).message);
       }
+      // If still initializing and this is a non-401 failure (network error,
+      // backend cold-start, etc.) do NOT show the login form — stay on the
+      // loading screen and let the next poll cycle retry.
       setConnected(false);
+    } finally {
+      if (fromInit) setInitializing(false);
     }
   }
   useEffect(() => {
-    const initial = setTimeout(() => void refresh(), 0);
+    // Pass fromInit=true so the loading screen is dismissed after this first call.
+    const initial = setTimeout(() => void refresh(true), 0);
     const timer = setInterval(() => void refresh(), 15000);
     return () => {
       clearTimeout(initial);
@@ -271,6 +288,27 @@ export default function Admin() {
     setQuery('');
     setNotice('');
   }
+  // Show a branded loading screen while the initial session check is in flight.
+  // This prevents the login form from flashing on every hard refresh for users
+  // who are already authenticated.
+  if (initializing)
+    return (
+      <main className="admin-login admin-loading">
+        <section>
+          <span className="admin-mark">
+            <Fish size={30} />
+          </span>
+          <p className="admin-eyebrow">BLUEHARBOR / OPERATIONS</p>
+          <h1>
+            Loading console…
+          </h1>
+          <p>Verifying your session, please wait.</p>
+        </section>
+        <div className="admin-loading-spinner">
+          <span className="admin-spinner" />
+        </div>
+      </main>
+    );
   if (!state)
     return (
       <main className="admin-login">

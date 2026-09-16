@@ -527,6 +527,30 @@
   outline: 3px solid #159d9c;
   outline-offset: 3px;
 }
+/* Loading screen shown during the initial session check on hard refresh.
+   Shares the same dark background as .admin-login but shows a spinner
+   instead of the login form so the user is never falsely prompted to sign in. */
+.admin-loading {
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+}
+.admin-loading-spinner {
+  display: grid;
+  place-items: center;
+}
+.admin-spinner {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #9ee8d7;
+  animation: admin-spin 0.9s linear infinite;
+}
+@keyframes admin-spin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 1200px) {
   .admin-rail {
     width: 220px;
@@ -638,7 +662,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .admin-app *,
-  .admin-login * {
+  .admin-login *,
+  .admin-spinner {
     transition: none !important;
     animation: none !important;
   }
