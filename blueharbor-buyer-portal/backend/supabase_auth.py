@@ -47,7 +47,14 @@ def login(h,c,d,S,staff=False):
 def signup(h,c,d,S):
     email=str(d.get('email','')).strip().lower();password=str(d.get('password',''));name=str(d.get('name','')).strip()
     if not d.get('consent') or not name or len(name)>150 or not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',email) or not 12<=len(password)<=128:raise S.APIError('Provide your name, valid email, 12–128 character password and consent.')
-    cloud.request('/auth/v1/signup',{'email':email,'password':password,'data':{'name':name}})
+    origin=h.headers.get('Origin')
+    if not origin:
+        host=h.headers.get('Host')
+        if host:
+            proto=h.headers.get('X-Forwarded-Proto', 'http' if host.startswith('localhost') else 'https')
+            origin=f"{proto}://{host}"
+    extra_headers={'Redirect-To': origin} if origin else None
+    cloud.request('/auth/v1/signup',{'email':email,'password':password,'data':{'name':name}}, extra_headers=extra_headers)
     return {'message':'If registration is available, check your email to confirm your account, then sign in.','confirmation_required':True}
 
 def logout(h,c,S,staff=False):

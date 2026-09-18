@@ -7,9 +7,10 @@ import cloud_config as cfg
 class CloudError(Exception):
     def __init__(self,message,status=502):self.message=message;self.status=status;super().__init__(message)
 
-def request(path,data=None,method=None,token=None,admin=False,raw=False,mime='application/json'):
+def request(path,data=None,method=None,token=None,admin=False,raw=False,mime='application/json',extra_headers=None):
     key=cfg.SECRET if admin else cfg.PUBLISHABLE
     headers={'apikey':key,'Content-Type':mime}
+    if extra_headers:headers.update(extra_headers)
     # New sb_secret keys authenticate through apikey; JWT service-role keys also
     # supply Authorization for compatibility with legacy Supabase gateways.
     if token:headers['Authorization']='Bearer '+token
