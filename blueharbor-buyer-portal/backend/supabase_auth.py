@@ -33,8 +33,15 @@ def login(h,c,d,S,staff=False):
         user=c.execute('SELECT * FROM users WHERE auth_uid=?',(uid,)).fetchone()
         if not user:
             name=str(identity.get('user_metadata',{}).get('name') or email.split('@')[0])[:150]
-            local_id=c.execute('INSERT INTO users(auth_uid,email,name,created) VALUES(?,?,?,?)',(uid,email,name,S.now())).lastrowid
-            c.execute('INSERT INTO verification_cases(user_id) VALUES(?)',(local_id,))
+            existing=c.execute('SELECT * FROM users WHERE email=?',(email,)).fetchone()
+            if existing:
+                c.execute('UPDATE users SET auth_uid=? WHERE id=?',(uid,existing['id']))
+                local_id=existing['id']
+                if not c.execute('SELECT 1 FROM verification_cases WHERE user_id=?',(local_id,)).fetchone():
+                    c.execute('INSERT INTO verification_cases(user_id) VALUES(?)',(local_id,))
+            else:
+                local_id=c.execute('INSERT INTO users(auth_uid,email,name,created) VALUES(?,?,?,?)',(uid,email,name,S.now())).lastrowid
+                c.execute('INSERT INTO verification_cases(user_id) VALUES(?)',(local_id,))
             user=c.execute('SELECT * FROM users WHERE id=?',(local_id,)).fetchone()
     name='bh_cloud_staff' if staff else 'bh_cloud_buyer';path='/api/admin' if staff else '/'
     age=max(1,min(int(result.get('expires_in',3600)),28800));sessions='staff_sessions' if staff else 'sessions'

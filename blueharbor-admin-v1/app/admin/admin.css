@@ -242,13 +242,17 @@
   margin-bottom: 24px;
 }
 .admin-panel {
-  border: 1px solid #d6e2eb;
-  background: white;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 5px 20px #123b5007;
-  margin-bottom: 22px;
+  padding: 26px;
+  box-shadow: 0 10px 30px #0f172a08, 0 1px 3px #0f172a04;
+  margin-bottom: 24px;
   min-width: 0;
+  transition: box-shadow 0.2s ease;
+}
+.admin-panel:hover {
+  box-shadow: 0 12px 35px #0f172a0a, 0 2px 5px #0f172a05;
 }
 .admin-dashboard-grid > .admin-panel {
   margin-bottom: 0;
@@ -257,39 +261,44 @@
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.5px;
+  color: #0f172a;
 }
 .admin-panel-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .admin-table-wrap {
   overflow-x: auto;
 }
 .admin-table-wrap table {
   font-size: 14px;
+  width: 100%;
 }
 .admin-table-wrap th {
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: #6a8190;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: #475569;
   background: #f8fafc;
-  padding: 13px 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
 }
 .admin-table-wrap td {
-  padding: 16px 12px;
+  padding: 16px;
   white-space: normal;
   max-width: 330px;
-  border-color: #e5edf2;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
 }
 .admin-table-wrap td small {
   display: block;
   font-size: 12px;
-  color: #688293;
-  margin-top: 5px;
+  color: #64748b;
+  margin-top: 6px;
 }
 .admin-pill {
   display: inline-block;
@@ -332,7 +341,7 @@
   border-color: #eedfb6;
 }
 .admin-muted {
-  color: #607c8e;
+  color: #64748b;
   font-size: 13px;
 }
 .intelligence-panel {
@@ -577,7 +586,7 @@
     display: none;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .admin-rail {
     position: static;
     width: 100%;
@@ -585,9 +594,14 @@
   }
   .admin-rail nav {
     flex-direction: row;
-    overflow: auto;
+    overflow-x: auto;
     margin-top: 18px;
     padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .admin-rail nav::-webkit-scrollbar {
+    display: none;
   }
   .admin-rail nav button {
     flex-shrink: 0;
@@ -658,6 +672,17 @@
   .admin-dialog input,
   .admin-dialog select {
     font-size: 16px;
+  }
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-table {
+    min-width: 700px; /* prevent squishing */
+  }
+  .admin-setting-grid,
+  .admin-tank-grid {
+    grid-template-columns: 1fr;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -736,32 +761,39 @@
   margin: 20px 0;
 }
 .admin-tank-card {
-  background: linear-gradient(130deg, #eaf5fa, #f8fcfd);
-  border: 1px solid #cadee8;
-  border-radius: 15px;
-  padding: 22px;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 15px #0f172a05;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-tank-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px #0f172a08;
 }
 .admin-tank-card > div:first-child {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #217d8b;
+  color: #0d9488;
 }
 .admin-tank-card h3 {
   font-size: 22px;
   font-weight: 700;
   margin: 20px 0 7px;
+  color: #0f172a;
 }
 .admin-tank-card p {
-  font-size: 13px;
-  color: #57798c;
+  font-size: 14px;
+  color: #475569;
   line-height: 1.7;
 }
 .admin-tank-card strong {
   display: block;
   font-size: 28px;
   margin: 18px 0 8px;
-  color: #0c536b;
+  color: #0f172a;
 }
 .admin-tank-card small {
   font-size: 12px;
@@ -780,21 +812,32 @@
   margin: 22px 0;
 }
 .admin-setting-grid > div {
-  background: #f4f8fb;
-  border: 1px solid #dbe7ef;
-  border-radius: 10px;
-  padding: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 10px #00000004;
+  transition: all 0.2s ease;
+}
+.admin-setting-grid > div:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 15px #0000000a;
+  transform: translateY(-1px);
 }
 .admin-setting-grid span {
   display: block;
   text-transform: uppercase;
-  font-size: 12px;
-  color: #628399;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
   margin-bottom: 9px;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.8px;
 }
 .admin-setting-grid b {
-  font-size: 14px;
+  font-size: 15px;
+  color: #0f172a;
+  font-weight: 600;
 }
 .admin-panel > p {
   line-height: 1.8;

@@ -687,7 +687,7 @@
     gap: 10px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .exchange-hero {
     min-height: 250px;
     padding: 26px 24px;
@@ -1098,7 +1098,7 @@
     padding: 0 24px;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .rail {
     position: static;
     width: 100%;
@@ -1111,6 +1111,11 @@
     overflow-x: auto;
     gap: 6px;
     padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .rail nav::-webkit-scrollbar {
+    display: none;
   }
   .rail nav button {
     flex-shrink: 0;
