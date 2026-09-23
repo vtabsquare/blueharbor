@@ -1,0 +1,11 @@
+buyer.yourdomain.com {
+    reverse_proxy buyer-portal:3000
+}
+
+admin.yourdomain.com {
+    reverse_proxy admin-portal:3000
+}
+
+api.yourdomain.com {
+    reverse_proxy backend:8001
+}

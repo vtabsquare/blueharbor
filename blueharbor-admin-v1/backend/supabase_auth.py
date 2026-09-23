@@ -22,9 +22,18 @@ def current(h,c,staff=False):
 
 def login(h,c,d,S,staff=False):
     email=str(d.get('email','')).strip().lower();password=str(d.get('password',''))
-    if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',email) or not password:raise S.APIError('Enter your email and password.')
-    result=cloud.request('/auth/v1/token?grant_type=password',{'email':email,'password':password})
-    identity=result.get('user',{});uid=identity.get('id');token=result.get('access_token')
+    token_input=d.get('access_token')
+    if token_input:
+        # SSO / OAuth flow: verify token directly
+        result=cloud.request('/auth/v1/user',{},token=token_input)
+        identity=result
+        uid=identity.get('id'); token=token_input
+        email=identity.get('email', '')
+    else:
+        # Password flow
+        if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',email) or not password:raise S.APIError('Enter your email and password.')
+        result=cloud.request('/auth/v1/token?grant_type=password',{'email':email,'password':password})
+        identity=result.get('user',{});uid=identity.get('id');token=result.get('access_token')
     if not uid or not token or not identity.get('email_confirmed_at'):raise S.APIError('Confirm your email in Supabase before signing in.',403)
     if staff:
         user=c.execute('SELECT * FROM staff WHERE auth_uid=? AND active=1',(uid,)).fetchone()
@@ -49,7 +58,8 @@ def login(h,c,d,S,staff=False):
     c.execute(f'INSERT INTO {sessions} VALUES(?,?,?) ON CONFLICT(token) DO UPDATE SET expires=excluded.expires',(hashlib.sha256(token.encode()).hexdigest(),user['id'],int(time.time())+age))
     S.admin.record(c,user if staff else None,'STAFF_LOGIN' if staff else 'BUYER_LOGIN',user['id'],'Supabase Auth sign-in',topic='admin' if staff else 'buyer',uid=None if staff else user['id'])
     c.commit()
-    h.send({'staff':S.admin.public_staff(user)} if staff else {'user':S.public_user(user)},cookie=f'{name}={token}; HttpOnly; SameSite=Strict; Path={path}; Max-Age={age}')
+    secure_flag = '; Secure' if os.environ.get('NODE_ENV', 'production') == 'production' else ''
+    h.send({'staff':S.admin.public_staff(user)} if staff else {'user':S.public_user(user)},cookie=f'{name}={token}; HttpOnly{secure_flag}; SameSite=Strict; Path={path}; Max-Age={age}')
     return None
 
 def signup(h,c,d,S):
@@ -72,7 +82,8 @@ def logout(h,c,S,staff=False):
     c.commit()
     try:cloud.request('/auth/v1/logout?scope=local',{},token=token)
     except cloud.CloudError:pass
-    h.send({'ok':True},cookie=f'{name}=; HttpOnly; SameSite=Strict; Path={path}; Max-Age=0')
+    secure_flag = '; Secure' if os.environ.get('NODE_ENV', 'production') == 'production' else ''
+    h.send({'ok':True},cookie=f'{name}=; HttpOnly{secure_flag}; SameSite=Strict; Path={path}; Max-Age=0')
     return None
 
 def staff_change(c,staff,action,d,S):

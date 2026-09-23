@@ -67,7 +67,8 @@ def route(h,c,path,d,write):
     if endpoint.startswith('document/') and not write:
         require(staff,'VERIFIER');row=c.execute('SELECT * FROM documents WHERE id=?',(endpoint.split('/')[-1],)).fetchone()
         if not row:raise S.APIError('Document not found.',404)
-        h.send(row['content'],mime=row['mime']);return None
+        decrypted = S.fernet.decrypt(row['content']) if row['content'].startswith(b'gAAAAA') else row['content']
+        h.send(decrypted,mime=row['mime']);return None
     if not write:
         return downloads(h,c,staff,endpoint)
     # All administrative writes are serialized; stale edits are rejected where needed.
@@ -332,7 +333,7 @@ def document_action(c,staff,action,d):
         mime='application/pdf' if content.startswith(b'%PDF-') else 'image/png' if content.startswith(b'\x89PNG\r\n\x1a\n') else 'image/jpeg' if content.startswith(b'\xff\xd8\xff') else None
         if not mime:raise S.APIError('Use PDF, PNG or JPEG.')
     version=c.execute('SELECT COALESCE(MAX(version),0)+1 FROM trade_documents WHERE order_id=? AND kind=?',(oid,kind)).fetchone()[0];did=secrets.token_hex(12)
-    c.execute('INSERT INTO trade_documents(id,order_id,kind,name,mime,content,published,version,created,staff_id,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)',(did,oid,kind,name,mime,content,0,version,S.now(),staff['id'],'DRAFT'))
+    c.execute('INSERT INTO trade_documents(id,order_id,kind,name,mime,content,published,version,created,staff_id,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)',(did,oid,kind,name,mime,S.fernet.encrypt(content),0,version,S.now(),staff['id'],'DRAFT'))
     c.execute("UPDATE order_document_requirements SET status='SUBMITTED',note='Soft copy attached for staff review.',updated=? WHERE order_id=? AND lower(document_name)=lower(?)",(S.now(),oid,kind))
     record(c,staff,'TRADE_DOCUMENT_CREATED',did,'Draft document saved',after={'order':oid,'kind':kind,'version':version})
 
@@ -340,7 +341,8 @@ def downloads(h,c,staff,endpoint):
     if endpoint.startswith('trade-document/'):
         require(staff,'OPERATIONS');row=c.execute('SELECT * FROM trade_documents WHERE id=?',(endpoint.split('/')[-1],)).fetchone()
         if not row:raise S.APIError('Document not found.',404)
-        h.send(row['content'],mime=row['mime'],filename=row['id']+'.'+('pdf' if row['mime']=='application/pdf' else 'png' if row['mime']=='image/png' else 'jpg'));return None
+        decrypted = S.fernet.decrypt(row['content']) if row['content'].startswith(b'gAAAAA') else row['content']
+        h.send(decrypted,mime=row['mime'],filename=row['id']+'.'+('pdf' if row['mime']=='application/pdf' else 'png' if row['mime']=='image/png' else 'jpg'));return None
     if endpoint=='report':
         require(staff,'OPERATIONS');import csv,io
         out=io.StringIO();writer=csv.writer(out);writer.writerow(['Order','Buyer','Product','kg','USD total','Status','Destination','Created'])

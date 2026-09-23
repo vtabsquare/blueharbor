@@ -42,6 +42,15 @@ def monitor(c):
     c.execute("INSERT OR REPLACE INTO settings VALUES('last_monitor',?)", (json.dumps(A.S.now()),))
     c.execute("INSERT OR REPLACE INTO settings VALUES('monitor_error','\"\"')")
 
+def retention_sweep(c):
+    cutoff_90 = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
+    c.execute("DELETE FROM orders WHERE status='CANCELLED' AND created < ?", (cutoff_90,))
+    c.execute("DELETE FROM audit WHERE created < ?", (cutoff_90,))
+    c.execute("DELETE FROM admin_audit WHERE created < ?", (cutoff_90,))
+    cutoff_30 = (date.today() - timedelta(days=30)).isoformat()
+    c.execute("DELETE FROM documents WHERE expiry < ?", (cutoff_30,))
+    c.execute("DELETE FROM notifications WHERE created < ?", (cutoff_90,))
+
 
 def start_worker():
     stop = threading.Event()
@@ -55,6 +64,7 @@ def start_worker():
                     cfg = A.settings(c)
                     if time.time() >= next_monitor:
                         monitor(c)
+                        retention_sweep(c)
                         next_monitor = time.time() + cfg['monitor_seconds']
                         A.change(c, 'catalog-refresh')
                     c.execute("INSERT OR REPLACE INTO settings VALUES('next_monitor',?)", (json.dumps(datetime.fromtimestamp(next_monitor, timezone.utc).isoformat()),))

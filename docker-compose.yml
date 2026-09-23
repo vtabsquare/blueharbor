@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./blueharbor-admin-v1/backend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY}
+      - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY}
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - BLUEHARBOR_ENCRYPTION_KEY=${BLUEHARBOR_ENCRYPTION_KEY}
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  buyer-portal:
+    build:
+      context: ./blueharbor-buyer-portal
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  admin-portal:
+    build:
+      context: ./blueharbor-admin-v1
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - buyer-portal
+      - admin-portal
+
+volumes:
+  caddy_data:
+  caddy_config:

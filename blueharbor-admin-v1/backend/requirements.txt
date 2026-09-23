@@ -1,1 +1,2 @@
 psycopg[binary]==3.3.5
+cryptography==42.0.5

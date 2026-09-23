@@ -12,6 +12,8 @@ import sys
 import threading
 import psycopg
 import cloud_config
+import uuid
+from cryptography.fernet import Fernet
 from app_mode import ROLE
 import cloud_http
 import supabase_auth
@@ -24,6 +26,15 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import admin_core as admin
+
+def get_fernet():
+    key = os.environ.get('BLUEHARBOR_ENCRYPTION_KEY')
+    if not key:
+        raise RuntimeError('BLUEHARBOR_ENCRYPTION_KEY environment variable is required for secure document encryption.')
+    return Fernet(key)
+
+fernet = get_fernet()
+
 admin.S = sys.modules[__name__]
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -84,6 +95,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length',str(len(data)))
         self.send_header('Cache-Control','no-store')
         self.send_header('X-Content-Type-Options','nosniff')
+        if hasattr(self, 'request_id'):
+            self.send_header('X-Request-ID', self.request_id)
         if cookie: self.send_header('Set-Cookie',cookie)
         if filename: self.send_header('Content-Disposition',f'attachment; filename="{filename}"')
         self.end_headers()
@@ -95,6 +108,21 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self): self.handle_api(True)
 
     def handle_api(self, write):
+        self.request_id = str(uuid.uuid4())
+        start_time = time.time()
+        def log_request(status, error=None):
+            log_data = {
+                'time': now(),
+                'request_id': self.request_id,
+                'method': self.command,
+                'path': self.path,
+                'status': status,
+                'duration_ms': round((time.time() - start_time) * 1000, 2)
+            }
+            if error:
+                log_data['error'] = error
+            print(json.dumps(log_data), flush=True)
+
         try:
             self.check_surface(self.path.split('?')[0])
             # Reject DNS rebinding and cross-origin writes. Vite preserves Host.
@@ -103,10 +131,21 @@ class Handler(BaseHTTPRequestHandler):
             if write and (self.headers.get('Origin') not in (None,*(f'http://{host}:{port}' for host in ('localhost','127.0.0.1') for port in WEB_PORTS)) or self.headers.get('X-BlueHarbor') != '1'):
                 raise APIError('Request origin rejected.',403)
             if not write and self.path in ('/api/stream','/api/admin/stream'):
+                log_request(200)
                 return self.stream_changes(self.path.startswith('/api/admin/'))
             if not write and self.path.split('?')[0] == '/api/health':
                 import realtime_bus
-                return self.send({'status':'ok','service':'blueharbor-supabase','database':'Supabase PostgreSQL','realtime':realtime_bus.status})
+                
+                # Check DB readiness
+                db_ok = True
+                try:
+                    with db() as c:
+                        c.execute("SELECT 1")
+                except Exception:
+                    db_ok = False
+                    
+                log_request(200 if db_ok else 503)
+                return self.send({'status':'ok' if db_ok else 'error','service':'blueharbor-supabase','database':'Supabase PostgreSQL','db_connected':db_ok,'realtime':realtime_bus.status}, status=200 if db_ok else 503)
             data={}
             if write:
                 length=int(self.headers.get('Content-Length','0'))
@@ -118,17 +157,24 @@ class Handler(BaseHTTPRequestHandler):
                 result=self.route(c,self.path.split('?')[0],data,write)
                 c.commit()
             if result is not None: self.send(result)
-        except APIError as e: self.send({'error':e.message},e.status)
-        except (ValueError,TypeError,KeyError): self.send({'error':'Invalid input.'},400)
-        except cloud_http.CloudError as e: self.send({'error':e.message},e.status)
-        except psycopg.IntegrityError: self.send({'error':'This record conflicts with existing data. Check IDs, quantities and required links.'},409)
+            log_request(200)
+        except APIError as e: 
+            self.send({'error':e.message},e.status)
+            log_request(e.status, e.message)
+        except (ValueError,TypeError,KeyError): 
+            self.send({'error':'Invalid input.'},400)
+            log_request(400, 'Invalid input')
+        except cloud_http.CloudError as e: 
+            self.send({'error':e.message},e.status)
+            log_request(e.status, e.message)
+        except psycopg.IntegrityError as e: 
+            self.send({'error':'This record conflicts with existing data. Check IDs, quantities and required links.'},409)
+            log_request(409, str(e))
         except Exception as e:
             import traceback
-            print(
-                f"DIAGNOSTIC 500: {type(e).__name__}\n{traceback.format_exc()}",
-                flush=True,
-            )
+            error_trace = traceback.format_exc()
             self.send({'error':'The request could not be completed. Please retry.'},500)
+            log_request(500, f"{type(e).__name__}: {str(e)}\n{error_trace}")
 
     def check_surface(self,path):
         allowed = path == '/api/health' or (path.startswith('/api/admin/') if ROLE == 'admin' else path.startswith('/api/') and not path.startswith('/api/admin/'))
@@ -173,6 +219,19 @@ class Handler(BaseHTTPRequestHandler):
             c.execute("UPDATE users SET name=?,company=?,registration=?,address=?,phone=?,country=?,verified='DRAFT' WHERE id=?",(*fields,country,uid))
             admin.case_revision(c,uid)
             audit(c,uid,'profile_updated'); return {'ok':True}
+        if path=='/api/export' and write:
+            orders=[dict(r) for r in c.execute('SELECT * FROM orders WHERE user_id=?',(uid,))]
+            docs=[dict(r) for r in c.execute('SELECT id,kind,name,created FROM documents WHERE user_id=?',(uid,))]
+            audit(c,uid,'data_exported')
+            return {'user':public_user(u),'orders':orders,'documents':docs}
+        if path=='/api/delete-account' and write:
+            # Delete PII but retain immutable audit records (they only contain IDs).
+            c.execute('DELETE FROM documents WHERE user_id=?',(uid,))
+            c.execute('DELETE FROM sessions WHERE user_id=?',(uid,))
+            c.execute("UPDATE users SET email='deleted@example.com', name='Deleted User', company='Deleted', address='', phone='', auth_uid='' WHERE id=?",(uid,))
+            audit(c,uid,'account_deleted')
+            # Trigger Supabase auth deletion in the background or instruct admin.
+            return {'ok':True}
         if path=='/api/documents' and write:
             if d.get('kind') not in admin.rules(c).get(u['country'],[]): raise APIError('Unsupported document type.')
             expiry=str(d.get('expiry',''))
@@ -182,7 +241,8 @@ class Handler(BaseHTTPRequestHandler):
             mime='application/pdf' if content.startswith(b'%PDF-') else 'image/png' if content.startswith(b'\x89PNG\r\n\x1a\n') else 'image/jpeg' if content.startswith(b'\xff\xd8\xff') else None
             if not mime: raise APIError('Only PDF, PNG, and JPEG are accepted.')
             name=Path(str(d.get('name','document'))).name[:120]
-            c.execute('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?)',(secrets.token_hex(12),uid,d['kind'],name,mime,content,expiry,now()))
+            encrypted_content = fernet.encrypt(content)
+            c.execute('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?)',(secrets.token_hex(12),uid,d['kind'],name,mime,encrypted_content,expiry,now()))
             c.execute("UPDATE users SET verified='DRAFT' WHERE id=?",(uid,))
             admin.case_revision(c,uid)
             audit(c,uid,'document_uploaded',d['kind']); return {'ok':True}
@@ -190,7 +250,8 @@ class Handler(BaseHTTPRequestHandler):
             row=c.execute('SELECT * FROM documents WHERE id=? AND user_id=?',(path.rsplit('/',1)[-1],uid)).fetchone()
             if not row: raise APIError('Document not found.',404)
             ext={'application/pdf':'pdf','image/png':'png','image/jpeg':'jpg','text/plain':'txt'}[row['mime']]
-            self.send(row['content'],mime=row['mime'],filename=f'document-{row["id"]}.{ext}'); return None
+            decrypted = fernet.decrypt(row['content']) if row['content'].startswith(b'gAAAAA') else row['content']
+            self.send(decrypted,mime=row['mime'],filename=f'document-{row["id"]}.{ext}'); return None
         if path=='/api/verification' and write:
             if not valid_verification(c,u): raise APIError('Complete company details and upload all required unexpired documents.')
             c.execute("UPDATE users SET verified='UNDER_REVIEW' WHERE id=?",(uid,))
@@ -249,7 +310,8 @@ class Handler(BaseHTTPRequestHandler):
         if path.startswith('/api/trade-document/') and not write:
             row=c.execute('SELECT t.* FROM trade_documents t JOIN orders o ON o.id=t.order_id WHERE t.id=? AND t.published=1 AND o.user_id=?',(path.rsplit('/',1)[-1],uid)).fetchone()
             if not row:raise APIError('Document not found.',404)
-            self.send(row['content'],mime=row['mime'],filename=row['id']+'.'+('pdf' if row['mime']=='application/pdf' else 'png' if row['mime']=='image/png' else 'jpg'));return None
+            decrypted = fernet.decrypt(row['content']) if row['content'].startswith(b'gAAAAA') else row['content']
+            self.send(decrypted,mime=row['mime'],filename=row['id']+'.'+('pdf' if row['mime']=='application/pdf' else 'png' if row['mime']=='image/png' else 'jpg'));return None
         if path=='/api/read-notifications' and write:
             c.execute('UPDATE notifications SET seen=1 WHERE user_id=?',(uid,)); return {'ok':True}
         if path.startswith('/api/confirmation/') and not write:
@@ -299,4 +361,4 @@ def main():
 if __name__=='__main__':
     try: main()
     except RuntimeError as e: print(str(e),flush=True);sys.exit(1)
-    except psycopg.Error: print('Cannot initialize Supabase PostgreSQL. Check the session-pooler URI, database password, network access, and SQL scripts 01/02. Credentials were not printed.',flush=True);sys.exit(1)
+    except psycopg.Error as e: print(e, flush=True); print('Cannot initialize Supabase PostgreSQL. Check the session-pooler URI, database password, network access, and SQL scripts 01/02. Credentials were not printed.',flush=True);sys.exit(1)

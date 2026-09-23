@@ -81,7 +81,10 @@ def db():
     from psycopg.rows import dict_row
     cfg.validate()
     # Session pooler URI from Dashboard Connect; no browser receives this DSN.
-    with psycopg.connect(cfg.DSN,sslmode='require',connect_timeout=10,prepare_threshold=None,row_factory=dict_row) as con:
+    parsed = cloud_http.urllib.parse.urlparse(cfg.DSN)
+    is_local = parsed.hostname in ('127.0.0.1', 'localhost', 'supabase-kong')
+    ssl_mode = 'prefer' if is_local else 'require'
+    with psycopg.connect(cfg.DSN,sslmode=ssl_mode,connect_timeout=10,prepare_threshold=None,row_factory=dict_row) as con:
         con.execute('SET search_path TO blueharbor, public')
         con.execute("SET statement_timeout TO '25s'")
         store=Store(con)
