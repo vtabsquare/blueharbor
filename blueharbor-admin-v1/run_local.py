@@ -15,10 +15,10 @@ sys.path.insert(0,str(ROOT/'backend'))
 from app_mode import ROLE
 children=[]
 
-def ports():
+def choose_ports(*preferred_ports):
     sockets=[]
     try:
-        for preferred in ((3000,8001) if ROLE=='buyer' else (3001,8002)):
+        for preferred in preferred_ports:
             sock=socket.socket()
             try:sock.bind(('127.0.0.1',preferred))
             except OSError:sock.bind(('127.0.0.1',0))
@@ -26,6 +26,9 @@ def ports():
         return tuple(s.getsockname()[1] for s in sockets)
     finally:
         for sock in sockets:sock.close()
+
+def ports():
+    return choose_ports(*(3000,8001) if ROLE=='buyer' else (3001,8002))
 
 def start(args,env):
     child=subprocess.Popen(args,cwd=ROOT,env=env,creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name=='nt' else 0)
