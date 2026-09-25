@@ -22,10 +22,12 @@ def request(path,data=None,method=None,token=None,admin=False,raw=False,mime='ap
             result=response.read(6*1024*1024)
             return result if raw else json.loads(result) if result else {}
     except urllib.error.HTTPError as exc:
+        body = exc.read().decode(errors='replace')
+        print(f"Supabase HTTP Error {exc.code} on {path}: {body}", flush=True)
         # Never return provider bodies, tokens, connection strings or SQL details.
         if '/auth/' in path and exc.code in (400,401,403,422):raise CloudError('Sign-in or account request was rejected. Check credentials, email confirmation and Supabase Auth settings.',401) from None
         if exc.code==429:raise CloudError('Supabase request limit reached. Wait a moment and try again.',429) from None
-        raise CloudError('Supabase request failed. Check project status, permissions and configuration.',502) from None
+        raise CloudError(f'Supabase request failed ({exc.code}). Check project status, permissions and configuration.',502) from None
     except (OSError,ValueError):raise CloudError('Supabase is unavailable. Check your internet connection and project settings.',503) from None
 
 def upload(path,content,mime):

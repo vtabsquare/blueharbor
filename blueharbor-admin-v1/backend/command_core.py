@@ -46,7 +46,7 @@ def action(c,staff,endpoint,d):
         A.record(c,staff,'DISCOUNT_PROPOSED',identifier,reason,after={'lot_id':lot,'percent':percent,'scope':'PRODUCT'});return
     identifier=A.integer(d,'id',1);status=A.text(d,'status');proposal=c.execute('SELECT * FROM discount_proposals WHERE id=?',(identifier,)).fetchone()
     if status not in ('APPROVED','REJECTED','WITHDRAWN') or not proposal:raise A.S.APIError('Invalid proposal decision.')
-    if (status in ('APPROVED','REJECTED') and proposal['status']!='PROPOSED') or (status=='WITHDRAWN' and proposal['status']!='APPROVED'):raise A.S.APIError('Proposal changed. Refresh before deciding.',409)
+    if (status in ('APPROVED','REJECTED') and proposal['status']!='PROPOSED') or (status=='WITHDRAWN' and proposal['status']!='APPROVED'):raise A.S.APIError(f'Proposal changed. Expected PROPOSED but got {proposal["status"]}. ID: {proposal["id"]}',409)
     if status=='APPROVED':
         row=valid_source(c,proposal['lot_id'],proposal['ends_on'])
         if row['cents_per_kg']!=proposal['base_cents']:raise A.S.APIError('Base price changed. Create a fresh proposal.',409)

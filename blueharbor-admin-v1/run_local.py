@@ -32,15 +32,23 @@ def start(args,env):
     children.append(child);return child
 
 def ready(url,timeout=90):
-    until=time.monotonic()+timeout
-    while time.monotonic()<until:
+    start=time.monotonic()
+    while True:
         if any(p.poll() is not None for p in children):raise RuntimeError('A service stopped. Check the message above.')
         try:
-            with urllib.request.urlopen(url,timeout=2) as r:
+            with urllib.request.urlopen(url,timeout=3) as r:
                 if r.status==200:return
-        except Exception:pass
+        except Exception as exc:
+            is_refused=False
+            if isinstance(exc, urllib.error.URLError) and isinstance(getattr(exc, 'reason', None), ConnectionRefusedError):
+                is_refused=True
+            elif isinstance(exc, ConnectionRefusedError):
+                is_refused=True
+            if not is_refused:
+                start=time.monotonic()
+        if time.monotonic()-start>timeout:
+            raise RuntimeError('Startup timed out. Check Supabase configuration and the messages above.')
         time.sleep(.5)
-    raise RuntimeError('Startup timed out. Check Supabase configuration and the messages above.')
 
 def main():
     import cloud_config

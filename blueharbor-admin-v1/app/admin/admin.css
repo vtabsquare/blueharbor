@@ -420,7 +420,7 @@
 }
 .admin-error {
   background: #fff0e9;
-  color: #9d422d;
+  color: #9d422d !important;
   border: 1px solid #eccdbf;
 }
 .admin-notice {

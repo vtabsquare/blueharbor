@@ -588,7 +588,7 @@ html[data-admin-theme] .admin-app,
 html[data-admin-theme] .admin-login {
   --ink: var(--cc-text);
   --muted-ink: var(--cc-muted);
-  --primary: #148a87;
+  --primary: #0f6b69;
   --primary-foreground: #fff;
   --background: var(--cc-panel);
   --foreground: var(--cc-text);

@@ -28,7 +28,7 @@ def translate(sql):
     ignore=sql.upper().startswith('INSERT OR IGNORE ')
     replace=sql.upper().startswith('INSERT OR REPLACE INTO settings'.upper())
     sql=re.sub(r'^INSERT OR (IGNORE|REPLACE) INTO','INSERT INTO',sql,flags=re.I)
-    sql=re.sub(r'\browid\b','sequence_id',sql)
+    sql=re.sub(r'\browid\b','id',sql)
     sql=re.sub(r'length\((\w+\.)?content\)',lambda m:(m.group(1) or '')+'content_size',sql)
     sql=sql.replace('version=version+1','version=country_rules.version+1')
     # Quote-aware placeholder conversion; literal punctuation is not a parameter.
@@ -55,14 +55,36 @@ class Store:
     def __init__(self,con):self.con=con;self.uploads=[]
     def execute(self,sql,params=()):
         params=list(params)
-        match=re.match(r'\s*INSERT INTO (documents|product_images|trade_documents) VALUES\s*\(',sql,re.I)
-        if match:
-            table=match.group(1);fields=FILES[table];idx=fields.index('content');content=params[idx]
+        # Match INSERT INTO table VALUES(...) or INSERT INTO table(cols) VALUES(...)
+        match_positional=re.match(r'\s*INSERT INTO (documents|product_images|trade_documents) VALUES\s*\(',sql,re.I)
+        match_named=re.match(r'\s*INSERT INTO (documents|product_images|trade_documents)\s*\(([^)]+)\)\s*VALUES\s*\(',sql,re.I)
+        if match_positional:
+            table=match_positional.group(1);fields=FILES[table]
+            idx=fields.index('content');content=params[idx]
             if not isinstance(content,bytes):raise ValueError('Upload bytes required')
             path=table+'/'+secrets.token_hex(24)
             cloud_http.upload(path,content,params[fields.index('mime')]);self.uploads.append(path)
             params[idx]=path;params.append(len(content))
             sql='INSERT INTO '+table+'('+','.join(fields+['content_size'])+') VALUES('+','.join('?' for _ in params)+')'
+        elif match_named:
+            table=match_named.group(1);col_list=[c.strip() for c in match_named.group(2).split(',')]
+            if 'content' in col_list:
+                idx=col_list.index('content');content=params[idx]
+                if not isinstance(content,bytes):raise ValueError('Upload bytes required')
+                mime_idx=col_list.index('mime') if 'mime' in col_list else -1
+                mime=params[mime_idx] if mime_idx>=0 else 'application/octet-stream'
+                path=table+'/'+secrets.token_hex(24)
+                cloud_http.upload(path,content,mime);self.uploads.append(path)
+                params[idx]=path
+                if 'content_size' not in col_list:
+                    col_list.append('content_size');params.append(len(content))
+                    # Add a placeholder for the new parameter
+                    sql=re.sub(r'VALUES\s*\((.*)\)', lambda m: 'VALUES (' + m.group(1) + ',?)', sql, flags=re.I|re.DOTALL)
+                else:
+                    params[col_list.index('content_size')]=len(content)
+                # Rewrite SQL with updated column list
+                sql=re.sub(r'INSERT INTO '+table+r'\s*\([^)]+\)',
+                    'INSERT INTO '+table+'('+','.join(col_list)+')',sql,flags=re.I)
         statement,serial=translate(sql)
         return Cursor(self.con.execute(statement,params or None),bool(serial))
     def executemany(self,sql,rows):

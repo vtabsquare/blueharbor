@@ -67,9 +67,9 @@ class CommandTests(unittest.TestCase):
     def test_worker_status_is_evidence_based(self):
         self.assertEqual(self.state()['monitor']['rules_status'],'OFFLINE')
         with server.db() as c:
-            c.execute("INSERT OR REPLACE INTO settings VALUES('worker_heartbeat',?)",(json.dumps(server.now()),))
+            c.execute("INSERT INTO settings(key, value) VALUES('worker_heartbeat',?) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value",(json.dumps(server.now()),))
         self.assertEqual(self.state()['monitor']['rules_status'],'RUNNING')
-        with server.db() as c:c.execute("INSERT OR REPLACE INTO settings VALUES('worker_heartbeat',?)",(json.dumps((datetime.now(timezone.utc)-timedelta(minutes=2)).isoformat()),))
+        with server.db() as c:c.execute("INSERT INTO settings(key, value) VALUES('worker_heartbeat',?) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value",(json.dumps((datetime.now(timezone.utc)-timedelta(minutes=2)).isoformat()),))
         self.assertEqual(self.state()['monitor']['rules_status'],'OFFLINE')
 
     def test_stock_status_uses_saved_inventory_rules(self):

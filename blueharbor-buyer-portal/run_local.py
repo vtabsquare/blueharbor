@@ -190,9 +190,9 @@ def start(args, env):
 
 
 def ready(url, timeout=90):
-    until = time.monotonic() + timeout
+    start = time.monotonic()
 
-    while time.monotonic() < until:
+    while True:
 
         if any(process.poll() is not None for process in children):
             raise RuntimeError(
@@ -201,19 +201,27 @@ def ready(url, timeout=90):
             )
 
         try:
-            with urllib.request.urlopen(url, timeout=2) as response:
+            with urllib.request.urlopen(url, timeout=3) as response:
                 if response.status == 200:
                     return
 
-        except Exception:
-            pass
+        except Exception as exc:
+            is_refused = False
+            if isinstance(exc, urllib.error.URLError) and isinstance(getattr(exc, 'reason', None), ConnectionRefusedError):
+                is_refused = True
+            elif isinstance(exc, ConnectionRefusedError):
+                is_refused = True
+
+            if not is_refused:
+                start = time.monotonic()
+
+        if time.monotonic() - start > timeout:
+            raise RuntimeError(
+                "Startup timed out. "
+                "Check Supabase configuration and the messages above."
+            )
 
         time.sleep(0.5)
-
-    raise RuntimeError(
-        "Startup timed out. "
-        "Check Supabase configuration and the messages above."
-    )
 
 
 # ---------------------------------------------------------

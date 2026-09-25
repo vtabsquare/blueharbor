@@ -193,6 +193,32 @@ export default function Portal() {
     }
     setConnected(true);
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      const params = new URLSearchParams(window.location.hash.substring(1));
+      const access_token = params.get('access_token');
+      const expires_in = params.get('expires_in');
+      if (access_token) {
+        setBusy(true);
+        api<{ user: Buyer }>('sso-login', { access_token, expires_in: parseInt(expires_in || '3600') })
+          .then(result => {
+            window.location.hash = '';
+            setAuth(null);
+            setView(result.user.verified === 'VERIFIED' ? 'Overview' : 'Profile & Compliance');
+            setNotice(
+              result.user.verified === 'VERIFIED'
+                ? 'Welcome. Your trading workspace is ready.'
+                : 'Welcome. Continue your compliance journey to unlock trading.',
+            );
+            void refresh();
+          })
+          .catch(e => setError(e.message))
+          .finally(() => setBusy(false));
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const initial = setTimeout(() => {
       void refresh()
@@ -334,7 +360,7 @@ export default function Portal() {
     return <main className="buyer-access-shell"><section className="buyer-access-card loading"><span className="brand-icon"><Fish /></span><p className="eyebrow">BLUEHARBOR FISH EXCHANGE</p><h1>Opening your trade desk…</h1><p>Connecting to the secure buyer workspace.</p></section></main>;
   if (!state) {
     const registering=auth==='register';
-    return <main className="buyer-access-shell"><section className="buyer-access-story"><span className="brand-icon"><Fish /></span><p className="eyebrow">INDIA TO GLOBAL MARKETS</p><h1>Your seafood orders, vessel journeys and clearance documents in one place.</h1><p>Verified buyers can reserve stock, follow the vessel’s complete port rotation and see the exact loading-to-discharge cargo window.</p><div><span>USD trading</span><span>Private compliance</span><span>Live shipment milestones</span></div></section><section className="buyer-access-card"><ShieldCheck size={30}/><p className="eyebrow">SECURE BUYER ACCESS</p><h2>{registering?'Create your buyer account':'Sign in to continue'}</h2><p>{registering?'Account creation is the first stage. Company and document verification follow inside the portal.':'Your marketplace, orders and shipment information are protected.'}</p>{notice&&<p className="access-notice">{notice}</p>}<form onSubmit={login} className="auth-form">{registering&&field('Full name','name')}{field('Email','email','','email')}<label className="field" htmlFor="gate-password"><span>{registering?'Password · 12–128 characters':'Password'}</span><Input id="gate-password" name="password" type="password" required minLength={registering?12:undefined} maxLength={128} autoComplete={registering?'new-password':'current-password'}/></label>{registering&&<label className="consent" htmlFor="gate-consent"><Checkbox id="gate-consent" checked={consent} onCheckedChange={v=>setConsent(!!v)}/>I agree to secure storage of my account and verification information.</label>}{error&&<p role="alert" className="inline-error">{error}</p>}<div className="auth-buttons"><Button disabled={busy||(registering&&!consent)} type="submit">{busy?'Please wait…':registering?'Create account':'Sign in'}<ArrowRight size={16}/></Button>{!registering && <Button type="button" variant="outline" onClick={() => window.location.href='https://supabase.com/docs/guides/auth/enterprise-sso'}>Enterprise Sign-In (SSO)</Button>}</div><button type="button" className="text-link" onClick={()=>{setError('');setAuth(registering?'login':'register')}}>{registering?'Already registered? Sign in':'New buyer? Create an account'}</button><p className="fine">Confirm your email before signing in. Supabase Auth securely manages passwords.</p></form></section></main>;
+    return <main className="buyer-access-shell"><section className="buyer-access-story"><span className="brand-icon"><Fish /></span><p className="eyebrow">INDIA TO GLOBAL MARKETS</p><h1>Your seafood orders, vessel journeys and clearance documents in one place.</h1><p>Verified buyers can reserve stock, follow the vessel’s complete port rotation and see the exact loading-to-discharge cargo window.</p><div><span>USD trading</span><span>Private compliance</span><span>Live shipment milestones</span></div></section><section className="buyer-access-card"><ShieldCheck size={30}/><p className="eyebrow">SECURE BUYER ACCESS</p><h2>{registering?'Create your buyer account':'Sign in to continue'}</h2><p>{registering?'Account creation is the first stage. Company and document verification follow inside the portal.':'Your marketplace, orders and shipment information are protected.'}</p>{notice&&<p className="access-notice">{notice}</p>}<form onSubmit={login} className="auth-form">{registering&&field('Full name','name')}{field('Email','email','','email')}<label className="field" htmlFor="gate-password"><span>{registering?'Password · 12–128 characters':'Password'}</span><Input id="gate-password" name="password" type="password" required minLength={registering?12:undefined} maxLength={128} autoComplete={registering?'new-password':'current-password'}/></label>{registering&&<label className="consent" htmlFor="gate-consent"><Checkbox id="gate-consent" checked={consent} onCheckedChange={v=>setConsent(!!v)}/>I agree to secure storage of my account and verification information.</label>}{error&&<p role="alert" className="inline-error">{error}</p>}<div className="auth-buttons"><Button disabled={busy||(registering&&!consent)} type="submit">{busy?'Please wait…':registering?'Create account':'Sign in'}<ArrowRight size={16}/></Button>{!registering && <Button type="button" variant="outline" onClick={() => window.location.href='http://127.0.0.1:54321/auth/v1/sso?provider_id=1f135138-bdea-420f-a350-1bd4539cf295&redirect_to=http://localhost:3000'}>Enterprise Sign-In (SSO)</Button>}</div><button type="button" className="text-link" onClick={()=>{setError('');setAuth(registering?'login':'register')}}>{registering?'Already registered? Sign in':'New buyer? Create an account'}</button><p className="fine">Confirm your email before signing in. Supabase Auth securely manages passwords.</p></form></section></main>;
   }
   return (
     <div className="bh">

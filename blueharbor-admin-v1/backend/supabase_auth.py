@@ -1,4 +1,5 @@
 """Supabase is the sole password authority; local/demo password login is removed."""
+import os
 import hashlib
 import re
 import time
@@ -19,6 +20,47 @@ def current(h,c,staff=False):
     row=c.execute(f'SELECT u.* FROM {table} u JOIN {sessions} s ON s.{fk}=u.id WHERE s.token=? AND s.expires>?'+(' AND u.active=1' if staff else ''),(hashlib.sha256(token.encode()).hexdigest(),int(time.time()))).fetchone()
     if not row:raise cloud.CloudError('Session expired. Please sign in again.',401)
     return row
+
+
+def sso_login(h,c,d,S,staff=False):
+    token=d.get('access_token')
+    if not token: raise S.APIError('Missing access token')
+    result = {'access_token': token, 'expires_in': d.get('expires_in', 3600)}
+    try:
+        user_info = cloud.request('/auth/v1/user', method='GET', token=token)
+    except cloud.CloudError:
+        raise S.APIError('Invalid SSO token', 403)
+
+    uid=user_info.get('id')
+    email=user_info.get('email','').lower()
+
+    if staff:
+        user=c.execute('SELECT * FROM staff WHERE auth_uid=? AND active=1',(uid,)).fetchone()
+        if not user:raise S.APIError('This account has no active staff access. Ask your administrator.',403)
+    else:
+        user=c.execute('SELECT * FROM users WHERE auth_uid=?',(uid,)).fetchone()
+        if not user:
+            name=str(email.split('@')[0])[:150]
+            existing=c.execute('SELECT * FROM users WHERE email=?',(email,)).fetchone()
+            if existing:
+                c.execute('UPDATE users SET auth_uid=? WHERE id=?',(uid,existing['id']))
+                local_id=existing['id']
+                if not c.execute('SELECT 1 FROM verification_cases WHERE user_id=?',(local_id,)).fetchone():
+                    c.execute('INSERT INTO verification_cases(user_id) VALUES(?)',(local_id,))
+            else:
+                local_id=c.execute('INSERT INTO users(auth_uid,email,name,created) VALUES(?,?,?,?)',(uid,email,name,S.now())).lastrowid
+                c.execute('INSERT INTO verification_cases(user_id) VALUES(?)',(local_id,))
+            user=c.execute('SELECT * FROM users WHERE id=?',(local_id,)).fetchone()
+
+    name='bh_cloud_staff' if staff else 'bh_cloud_buyer';path='/api/admin' if staff else '/'
+    age=max(1,min(int(result.get('expires_in',3600)),28800));sessions='staff_sessions' if staff else 'sessions'
+    c.execute(f'INSERT INTO {sessions} VALUES(?,?,?) ON CONFLICT(token) DO UPDATE SET expires=excluded.expires',(hashlib.sha256(token.encode()).hexdigest(),user['id'],int(time.time())+age if 'time' in locals() else int(S.time.time())+age))
+    S.admin.record(c,user if staff else None,'STAFF_LOGIN' if staff else 'BUYER_LOGIN',user['id'],'Supabase SSO sign-in',topic='admin' if staff else 'buyer',uid=None if staff else user['id'])
+    c.commit()
+    import os
+    secure_flag = '; Secure' if os.environ.get('NODE_ENV', 'production') == 'production' else ''
+    h.send({'staff':S.admin.public_staff(user)} if staff else {'user':S.public_user(user)},cookie=f'{name}={token}; HttpOnly{secure_flag}; SameSite=Strict; Path={path}; Max-Age={age}')
+    return None
 
 def login(h,c,d,S,staff=False):
     email=str(d.get('email','')).strip().lower();password=str(d.get('password',''))
@@ -110,10 +152,27 @@ def staff_change(c,staff,action,d,S):
     else:
         password=A.text(d,'password',128)
         if len(password)<12:raise S.APIError('Use at least 12 characters.')
-        result=cloud.request('/auth/v1/admin/users',{'email':email,'password':password,'email_confirm':True,'user_metadata':{'name':name}},admin=True)
-        uid=result.get('id') or result.get('user',{}).get('id')
+        # Try to create the user; if already exists, look up and reuse the UUID.
+        try:
+            result=cloud.request('/auth/v1/admin/users',{'email':email,'password':password,'email_confirm':True,'user_metadata':{'name':name}},admin=True)
+            uid=result.get('id') or result.get('user',{}).get('id')
+        except cloud.CloudError:
+            # User already exists in Supabase Auth (e.g. from a previous test run).
+            existing_resp=cloud.request('/auth/v1/admin/users?email='+email,{},method='GET',admin=True)
+            existing_users=existing_resp.get('users') or []
+            match=[u for u in existing_users if u.get('email','').lower()==email]
+            if not match:raise S.APIError('Supabase Auth rejected the request. Check project limits and configuration.',502)
+            uid=match[0]['id']
+            # Update the password so the staff can sign in with the specified password.
+            cloud.request('/auth/v1/admin/users/'+uid,{'password':password,'email_confirm':True},method='PUT',admin=True)
         if not uid:raise S.APIError('Supabase did not return the new staff identity.',502)
         # If database mapping fails, the Auth account has no staff permissions.
         # Recover by linking its UUID using the provided bootstrap SQL, not by deleting users.
-        sid=c.execute('INSERT INTO staff(auth_uid,email,name,role,active,created) VALUES(?,?,?,?,?,?)',(uid,email,name,role,active,S.now())).lastrowid
+        # Check if this auth_uid is already in staff table
+        existing_staff=c.execute('SELECT * FROM staff WHERE auth_uid=?',(uid,)).fetchone()
+        if existing_staff:
+            sid=existing_staff['id']
+            c.execute('UPDATE staff SET name=?,role=?,active=? WHERE id=?',(name,role,active,sid))
+        else:
+            sid=c.execute('INSERT INTO staff(auth_uid,email,name,role,active,created) VALUES(?,?,?,?,?,?)',(uid,email,name,role,active,S.now())).lastrowid
     A.record(c,staff,'STAFF_SAVED',sid,'Supabase-linked staff access updated',after={'name':name,'role':role,'active':active})

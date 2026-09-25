@@ -6,6 +6,12 @@ condition=threading.Condition()
 generation=0
 status='STARTING'
 
+def trigger():
+    global generation
+    with condition:
+        generation+=1
+        condition.notify_all()
+
 def wait(previous,timeout=15):
     with condition:
         condition.wait_for(lambda:generation!=previous,timeout)

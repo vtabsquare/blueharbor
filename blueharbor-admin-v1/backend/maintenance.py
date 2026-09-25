@@ -14,9 +14,21 @@ def backup():
     folder = server.ROOT / 'backend' / 'backups'
     folder.mkdir(parents=True, exist_ok=True)
     import secrets
+    from urllib.parse import urlparse
     target = folder / (f"blueharbor-{server.now().replace(':','-')}-{secrets.token_hex(3)}.sql")
     print(f"Creating backup at {target}...")
-    subprocess.run(['pg_dump', DB_URL, '-f', str(target), '--clean', '--if-exists', '--no-owner', '--no-privileges', '-n', 'blueharbor', '-n', 'public'], check=True)
+    parsed = urlparse(DB_URL)
+    is_local = parsed.hostname in ('127.0.0.1', 'localhost', 'supabase-kong')
+    if is_local:
+        # supabase db dump uses the bundled pg_dump matching the local PG version
+        result = subprocess.run(
+            ['supabase', 'db', 'dump', '--local', '-f', str(target)],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f'supabase db dump failed: {result.stderr}')
+    else:
+        subprocess.run(['pg_dump', DB_URL, '-f', str(target), '--clean', '--if-exists', '--no-owner', '--no-privileges', '-n', 'blueharbor', '-n', 'public'], check=True)
     return target
 
 def restore(source):

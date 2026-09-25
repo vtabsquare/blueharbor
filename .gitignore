@@ -26,3 +26,33 @@
 **/.DS_Store
 **/.vscode/
 **/.idea/
+
+# Test reports & results
+**/playwright-report/
+**/test-results/
+**/*.spec.ts.skip
+**/*.png
+audit_report.md
+
+# Database dumps, backups & sqlite
+**/*.sql
+!blueharbor-admin-v1/backend/01_schema.sql
+**/sqlite.db
+**/backups/
+
+# Diagnostic scripts & temporary patch files
+analyze_missing_tables.py
+find_tables*.py
+fix_*.py
+generate_*.py
+patch_*.py
+restore_*.py
+run_e2e*.py
+seed_*.py
+test_ready*.py
+test_restore.py
+update_cloud_pw.py
+validate_schema.py
+wipe_and_test.sh
+test_dump_script.py
+*_launcher.sh

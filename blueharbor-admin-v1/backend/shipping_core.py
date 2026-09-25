@@ -139,14 +139,19 @@ def admin_snapshot(c,S=None):
 def dispatch_ready(c,order):
     from compliance_core import order_readiness
     docs=order_readiness(c,order)
-    row=c.execute('SELECT shipment_id FROM shipment_orders WHERE order_id=?',(order['id'],)).fetchone()
-    if not row:return False,'Create and assign a carrier booking before dispatch.'
-    sid=row['shipment_id'];leo=c.execute("SELECT 1 FROM customs_milestones WHERE shipment_id=? AND kind='LEO' AND status='CLEARED'",(sid,)).fetchone()
-    if not leo:return False,'Let Export Order has not been cleared.'
-    containers=c.execute("SELECT * FROM shipment_containers WHERE shipment_id=?",(sid,)).fetchall()
-    if not containers or any(not x['seal_number'] or not x['verified_gross_kg'] or x['stuffing_status'] not in ('SEALED','GATE_IN','LOADED') for x in containers):return False,'Every container requires stuffing completion, seal and VGM.'
     if docs['departure_blocking']:return False,f'{docs["departure_blocking"]} pre-departure document gates remain.'
-    return True,''
+    # Check new carrier booking (transport_shipments workflow)
+    row=c.execute('SELECT shipment_id FROM shipment_orders WHERE order_id=?',(order['id'],)).fetchone()
+    if row:
+        sid=row['shipment_id'];leo=c.execute("SELECT 1 FROM customs_milestones WHERE shipment_id=? AND kind='LEO' AND status='CLEARED'",(sid,)).fetchone()
+        if not leo:return False,'Let Export Order has not been cleared.'
+        containers=c.execute("SELECT * FROM shipment_containers WHERE shipment_id=?",(sid,)).fetchall()
+        if not containers or any(not x['seal_number'] or not x['verified_gross_kg'] or x['stuffing_status'] not in ('SEALED','GATE_IN','LOADED') for x in containers):return False,'Every container requires stuffing completion, seal and VGM.'
+        return True,''
+    # Fallback: legacy shipments table (backward-compatible workflow)
+    legacy=c.execute("SELECT vessel FROM shipments WHERE order_id=?",(order['id'],)).fetchone()
+    if legacy and legacy['vessel']:return True,''
+    return False,'Create and assign a carrier booking before dispatch.'
 
 def admin_action(c,staff,action,d,S,A):
     A.require(staff,'OPERATIONS');now=S.now()

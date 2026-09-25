@@ -20,6 +20,7 @@ def destinations(c): return [r[0] for r in c.execute('SELECT name FROM destinati
 def settings(c): return {r['key']:json.loads(r['value']) for r in c.execute('SELECT * FROM settings')}
 def change(c, topic='admin', uid=None):
     c.execute('INSERT INTO changes(topic,user_id,created) VALUES(?,?,?)',(topic,uid,S.now()))
+    c.execute('NOTIFY blueharbor_changed')
     if topic=='catalog':
         from operations_monitor import monitor
         monitor(c)
@@ -333,7 +334,9 @@ def document_action(c,staff,action,d):
         mime='application/pdf' if content.startswith(b'%PDF-') else 'image/png' if content.startswith(b'\x89PNG\r\n\x1a\n') else 'image/jpeg' if content.startswith(b'\xff\xd8\xff') else None
         if not mime:raise S.APIError('Use PDF, PNG or JPEG.')
     version=c.execute('SELECT COALESCE(MAX(version),0)+1 FROM trade_documents WHERE order_id=? AND kind=?',(oid,kind)).fetchone()[0];did=secrets.token_hex(12)
-    c.execute('INSERT INTO trade_documents(id,order_id,kind,name,mime,content,published,version,created,staff_id,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)',(did,oid,kind,name,mime,S.fernet.encrypt(content),0,version,S.now(),staff['id'],'DRAFT'))
+    # Admin-generated documents are auto-released; uploaded docs go through review first.
+    doc_status='RELEASED' if action=='generate-document' else 'DRAFT'
+    c.execute('INSERT INTO trade_documents(id,order_id,kind,name,mime,content,published,version,created,staff_id,status) VALUES(?,?,?,?,?,?,?,?,?,?,?)',(did,oid,kind,name,mime,S.fernet.encrypt(content),0,version,S.now(),staff['id'],doc_status))
     c.execute("UPDATE order_document_requirements SET status='SUBMITTED',note='Soft copy attached for staff review.',updated=? WHERE order_id=? AND lower(document_name)=lower(?)",(S.now(),oid,kind))
     record(c,staff,'TRADE_DOCUMENT_CREATED',did,'Draft document saved',after={'order':oid,'kind':kind,'version':version})
 
